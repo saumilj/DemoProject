@@ -21,7 +21,7 @@ public class RestApis {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getChairs(){
 			
-		Floor f = new Floor("text","success");
+		Sample f = new Sample("Test","success");
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter(); // for serializing and printing in proper format
 		String json = null;
 		try {

@@ -1,18 +1,13 @@
-/**
- * 
- */
-
 // Waits for DOM to load up
 var url = "http://localhost:9080/DemoWebApp/rest/service/"
 $(document).ready(function(){
 
 	$("#btnGet").click(function(){
 		
-		
 		$.getJSON(url, function(data){
             
-			$.each(data, function(field){ // modify: make as callback
-                alert(field);
+			$.each(data, function(i,field){ // modify: make as callback
+                alert(i+":"+field);
             });
         });
 	});
@@ -27,11 +22,10 @@ $(document).ready(function(){
 			headers: {
 				"Content-Type": "application/json"
 			},
+			// Modify
 			success : function(data) {		   
 				alert(data); 
 			}	
 		});
-	
-	});
-	
+	});	
 })
