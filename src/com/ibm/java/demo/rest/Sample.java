@@ -2,6 +2,7 @@ package com.ibm.java.demo.rest;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+// Test Connection
 public class Sample {
 	
   public String test;

@@ -3,16 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<link rel="stylesheet" type="text/css" href="css/index.css">
 <title>Floor Plan</title>
 </head>
 <body>
 
 <center>
 <button class = "btn" id = "btnGet">Check GET</button>
-<button class = "btn" id = "btnPost">Check POST</button>
 </center>
 
-<div></div>
+<div id="myform" title="Create new chair" style = "display:none;">
+  
+  <div class="form-content">
+    	<form>
+    		<label for="name">Chair Name</label>
+      		<input type="text" name="name" id="chair">      
+    		 <input type="submit" id = "chair-submit">    		
+  		</form>
+  	</div>
+</div>
+
+<div id="myform" title="Create new room" style = "display:none;">
+  
+  <div class="form-content">
+    	<form>
+    		<label for="name">Room Name</label>
+      		<input type="text" name="name" id="room">      
+    		 <input type="submit" id = "room-submit">    		
+  		</form>
+  	</div>
+</div>
+
+<button id="create-user">Create Chair</button>
 
 <script type = "text/javascript" src = js/index.js></script>
 </body>
