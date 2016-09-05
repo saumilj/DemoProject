@@ -12,7 +12,7 @@
 <button class = "btn" id = "btnGet">Check GET</button>
 </center>
 
-<div id="myform" title="Create new chair" style = "display:none;">
+<div id="chairform" title="Create new chair" style = "display:none;">
   
   <div class="form-content">
     	<form>
@@ -23,7 +23,7 @@
   	</div>
 </div>
 
-<div id="myform" title="Create new room" style = "display:none;">
+<div id="roomform" title="Create new room" style = "display:none;">
   
   <div class="form-content">
     	<form>
@@ -34,7 +34,17 @@
   	</div>
 </div>
 
-<button id="create-user">Create Chair</button>
+<textarea id="mytext"></textarea>
+<select id="dropdown">
+    <option value="">None</option>
+    <option value="text1">Room1</option>
+    <option value="text2">Room2</option>
+    <option value="text3">Room3</option>
+    <option value="text4">Room4</option>
+</select>
+<br>
+<button id="create-chair">Create Chair</button><br>
+<button id="create-room">Create Room</button>
 
 <script type = "text/javascript" src = js/index.js></script>
 </body>
