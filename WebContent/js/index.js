@@ -3,17 +3,30 @@ var url = "http://localhost:9080/DemoWebApp/rest/service/"
 $(document).ready(function(){
 	
 	//Populate DropDown Menu
-	Menu("Room");
-	Menu("Chair");
+	roomMenu();
+	chairMenu();
 	
 	var chairForm		= document.getElementById('chairform');
 	var roomForm 		= document.getElementById('roomform');	
 	var txtChair 		= document.getElementById('txtChair');
     var txtRoom 		= document.getElementById('txtRoom');
-    var roomdropdown	= document.getElementById('roomdropdown');
-    var chairdropdown	= document.getElementById('chairdropdown');
+    var roomdropdown	= document.getElementById('Roomdropdown');
+    var chairdropdown	= document.getElementById('Chairdropdown');
     
-	
+	$("#associate").click(function(event){
+		
+		var data = "{\"Chair\" : \""+txtChair.value+"\", \"Room\": \""+txtRoom.value+"\"}";
+		$.ajax({
+			url: url+"associate/",
+			data: data,
+			contentType: 'application/json',
+			dataType: 'application/json',
+			type: 'POST',				
+			success: function(data) {		   
+				alert(data); 
+			}	
+		});	
+	})
 	$("#chair-submit").click(function(event){
 		//Because of async behaviour, we need to block the browser for performing default action.
 		event.preventDefault(); 
@@ -24,22 +37,16 @@ $(document).ready(function(){
 		}
 		var data = "{\"Name\" : \""+chair+"\", \"Attribute\": \"Chair\"}";
 		$.ajax({
-			url: url+"attribute/",
+			url: url+"chair/",
 			data: data,
 			contentType: 'application/json',
-			dataType: 'text/html',
+			dataType: 'json',
 			type: 'POST',				
-			
 			success: function(data) {		   
-				alert(data); 
+				location.reload();
+				//updateChairMenu(chair);
 			}	
 		});	
-			
-		//User can create multiple chairs in one go.	
-		document.getElementById('chair').value = ''; 
-			
-		//Call chair in success after removing bug. 
-		Menu("Chair");
 	});	 
 	  
     $("#room-submit").click(function(event){	 
@@ -54,40 +61,46 @@ $(document).ready(function(){
 		
 		var data = "{\"Name\" : \""+room+"\", \"Attribute\": \"Room\"}";
 		$.ajax({
-			url: url+"attribute/",
+			url: url+"room/",
 			data: data,
 			contentType: 'application/json',
-			dataType: 'text/html',
+			dataType: 'json',
 			type: 'POST',			
 
 			success: function(data) {		   
-			alert(data); 
+				location.reload();
 			}	
 		});	
-		
-		//So that user can create muliple chairs in one go.
-		document.getElementById('chair').value = ''; 
-		
-		//Update drop-down menu for room.	
-		Menu("Room");
     });	 
     
-    //Single function to get all RoomId/ChairId from db
-    function Menu(name){    	
-    	$.getJSON(url, {attribute:name}, results)  	
+    function roomMenu(){    	
+    	$.getJSON(url+"room", roomresults)  	
     }
     
-    function results(data){        
-		$.each(data, function(i,field){ 
-			var option = $('<option />').val(field).text(field);
-			
+    function roomresults(data){        
+		$.each(data, function(i,field){ 			
+			var option = $('<option />').val(field).text(field);			
 			//Populate the appropriate dropDown menu
-			var dropDown = (i.charAt(0)=='C' ? "#Chairdropdown" : "#Roomdropdown");
+			var dropDown = (i.charAt(0)=='C' ? "#Chairdropdown" : "#Roomdropdown");	
+			// This is appending. But we just need to add the last entry added.
 		    $(dropDown).append(option);
 		});
 	}
- 
-    //Display window to enter name of resource to be created.
+    function chairMenu(){    	
+    	$.getJSON(url+"chair", chairresults)  	
+    }
+    
+    function chairresults(data){        
+		$.each(data, function(i,field){ 			
+			var option = $('<option />').val(field).text(field);			
+			//Populate the appropriate dropDown menu
+			var dropDown = (i.charAt(0)=='C' ? "#Chairdropdown" : "#Roomdropdown");	
+			// This is appending. But we just need to add the last entry added.
+		    $(dropDown).append(option);
+		});
+	}
+    
+      //Display window to enter name of resource to be created.
     $( "#create-room" ).click(function() {
     	 $("#roomform").show(100);
     });
@@ -115,3 +128,21 @@ $(document).ready(function(){
     	txtRoom.value = this.value;
     }
 })
+
+
+
+
+//    function updateChairMenu(name){    	
+//    	$.getJSON(url+"chair",{chair:name},function(data){		
+//    		var option = $('<option />').val(data).text(data);			
+//			$("#Chairdropdown").append(option);
+//    	})  	
+//    }
+//    
+//    function updateRoomMenu(name){    	
+//    	$.getJSON(url+"room",{room:name},function(data){		
+//    		var option = $('<option />').val(data).text(data);			
+//			$("#Roomdropdown").append(option);
+//    	})  	
+//    }
+//    

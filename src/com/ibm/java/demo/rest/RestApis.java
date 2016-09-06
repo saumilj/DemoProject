@@ -27,13 +27,14 @@ public class RestApis {
 	DatabaseQuery dbq = new DatabaseQuery();
 
 	@GET
+	@Path("/chair")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getChair(@QueryParam("attribute") String attribute){
-			
+	public Response getChairs(@QueryParam("chair") String chairName){
+		
 		String res = null;
-		System.out.print("attribute: "+attribute);
 		try {
-			res = dbq.getNames(attribute);
+				res = dbq.getNames("Chair");
+			
 		} catch (FileNotFoundException | SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,12 +42,51 @@ public class RestApis {
 		return Response.ok(res).build();	
 	}
 	
-	// Modify
+	@GET
+	@Path("/room")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRooms(){
+			
+		String res = null;
+		try {
+			res = dbq.getNames("Room");
+		} catch (FileNotFoundException | SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+		return Response.ok(res).build();	
+	}
+	
 	@POST
-	@Path("/attribute")
+	@Path("/chair")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postRoom(String f) throws FileNotFoundException, JSONException, SQLException, NamingException{
+	public Response postChair(String f){
+				
+		String response = null;	
+		JSONObject jobj = new JSONObject(f);
+		String name = jobj.getString("Name");
+		String attribute = jobj.getString("Attribute");
+		
+		//Single function to create new Chair/Room
+		try{
+			response = dbq.createResource(name, attribute);
+		}
+		catch(FileNotFoundException | JSONException | SQLException | NamingException e){
+			e.printStackTrace();
+		}
+		
+		JSONObject res = new JSONObject();
+		res.put("response","print");
+		System.out.print(response);
+		return Response.ok().entity(res.toString()).build();
+	}
+	
+	@POST
+	@Path("/room")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response postRoom(String f){
 				
 		String response = null;
 		
@@ -55,10 +95,45 @@ public class RestApis {
 		String attribute = jobj.getString("Attribute");
 		
 		//Single function to create new Chair/Room
-		response = dbq.createResource(name, attribute);
+		try{
+			response = dbq.createResource(name, attribute);
+		}
+		catch(FileNotFoundException | JSONException | SQLException | NamingException e){
+			e.printStackTrace();
+		}
 		
+		JSONObject res = new JSONObject();
+		res.put("response","print");
 		System.out.print(response);
-		return Response.ok().entity("done").build();
+		return Response.ok().entity(res.toString()).build();
+	}
+	
+	@POST
+	@Path("/associate")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response postAssociate(String f){
+				
+		String response = null;
+		
+		JSONObject jobj = new JSONObject(f);
+		String room = jobj.getString("Room");
+		String chair = jobj.getString("Chair");
+		System.out.print("room: "+room);
+		System.out.print("chair: "+chair);
+		
+		//Single function to create new Chair/Room
+		try{
+			response = dbq.associate(room, chair);
+		}
+		catch(FileNotFoundException | JSONException | SQLException | NamingException e){
+			e.printStackTrace();
+		}
+		
+		JSONObject res = new JSONObject();
+		res.put("response","done");
+		System.out.print(response);
+		return Response.ok().entity(res.toString()).build();
 	}
 	
 	@DELETE
@@ -87,6 +162,20 @@ public class RestApis {
 //	return Response.ok().entity("done").build();
 //}
 
+//@GET
+//@Path("/room/{room}")
+//@Produces(MediaType.APPLICATION_JSON)
+//public Response getRoom(@QueryParam("room") String roomName){
+//		
+//	String res = null;
+//	try {
+//		res = dbq.getRoom(roomName);
+//	} catch (FileNotFoundException | SQLException | NamingException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}			
+//	return Response.ok(res).build();	
+//}
 
 
 //@GET
