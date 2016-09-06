@@ -8,10 +8,6 @@
 </head>
 <body>
 
-<center>
-<button class = "btn" id = "btnGet">Check GET</button>
-</center>
-
 <div id="chairform" title="Create new chair" style = "display:none;">
   
   <div class="form-content">
@@ -29,21 +25,22 @@
     	<form>
     		<label for="name">Room Name</label>
       		<input type="text" name="name" id="room">      
-    		 <input type="submit" id = "room-submit">    		
+    		 <input type="submit" id = "room-submit">  		
   		</form>
   	</div>
 </div>
 
-<textarea id="mytext"></textarea>
-<select id="dropdown">
-    <option value="">None</option>
-    <option value="text1">Room1</option>
-    <option value="text2">Room2</option>
-    <option value="text3">Room3</option>
-    <option value="text4">Room4</option>
+<input type = "text" id="txtChair"/>
+<select id="Chairdropdown">
 </select>
 <br>
-<button id="create-chair">Create Chair</button><br>
+
+<button id="create-chair">Create Chair</button><br><br>
+
+<input type = "text" id="txtRoom"/>
+<select id="Roomdropdown">
+</select>
+<br>
 <button id="create-room">Create Room</button>
 
 <script type = "text/javascript" src = js/index.js></script>
