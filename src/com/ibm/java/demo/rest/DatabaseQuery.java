@@ -40,11 +40,12 @@ public class DatabaseQuery {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
-		ctx = new InitialContext();
-		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+//		ctx = new InitialContext();
+//		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+		
 
 		try {
-			con = dataSource.getConnection();
+			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
 			if (inputStream != null) {
 				try {
@@ -98,11 +99,12 @@ public class DatabaseQuery {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
-		ctx = new InitialContext();
-		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+//		ctx = new InitialContext();
+//		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+		
 
 		try {
-			con = dataSource.getConnection();
+			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
 			if (inputStream != null) {
 				try {
@@ -154,13 +156,16 @@ public class DatabaseQuery {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
-		ctx = new InitialContext();
-		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+//		ctx = new InitialContext();
+//		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+		
+		
+		
 		JSONObject jobj = new JSONObject();
 		JSONObject jerror = new JSONObject();
 
 		try {
-			con = dataSource.getConnection();
+			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
 			if (inputStream != null) {
 				try {
@@ -212,13 +217,17 @@ public class DatabaseQuery {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
-		ctx = new InitialContext();
-		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+//		ctx = new InitialContext();
+//		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+		
+		
+		
 		JSONObject jobj = new JSONObject();
 		JSONObject jerror = new JSONObject();
 
 		try {
-			con = dataSource.getConnection();
+			//con = dataSource.getConnection();
+			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
 			if (inputStream != null) {
 				try {
