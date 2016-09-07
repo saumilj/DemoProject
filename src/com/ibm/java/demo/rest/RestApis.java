@@ -144,12 +144,9 @@ public class RestApis {
 		}
 		catch(FileNotFoundException | JSONException | SQLException | NamingException e){
 			e.printStackTrace();
-		}
-		
-		JSONObject res = new JSONObject();
-		res.put("response","done");
+		}		
 		System.out.print(response);
-		return Response.ok().entity(res.toString()).build();
+		return Response.ok().entity(response.toString()).build();
 	}
 	
 	@DELETE

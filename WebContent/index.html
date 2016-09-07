@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<link href="//1.www.s81c.com/common/v18/css/www.css" rel="stylesheet" />
+<script src="//1.www.s81c.com/common/v18/js/www.js"></script>
 <link rel="stylesheet" type="text/css" href="css/index.css">
 <title>Floor Plan</title>
 </head>
 <body>
 
-<center><h1>CHAIR ARRANGEMENT</h1></center><br>
+<center><h1 class="ibm-h1 ibm-light ibm-textcolor-blue-50">CHAIR ARRANGEMENT</h1></center><hr><br><br>
 
+<div id = "structure">
 <div id="chairform" title="Create new chair" style = "display:none;">
   
   <div class="form-content">
@@ -35,21 +38,19 @@
 <input type = "text" id="txtChair"/>
 <select id="Chairdropdown">
 </select>
-<br>
 
-<button id="create-chair">Create Chair</button><br><br>
+<button id="create-chair" class="ibm-btn-sec ibm-btn-blue-50">Create Chair</button><br><br>
 
 <input type = "text" id="txtRoom"/>
 <select id="Roomdropdown">
 </select>
-<br>
-<button id="create-room">Create Room</button><br><br>
+<button id="create-room" class ="ibm-btn-sec ibm-btn-blue-50">Create Room</button><br><br>
 
-<button id="associate">Associate</button><br><br>
-<button id="report">Report</button><br><br>
-
-<table id ='table'>
-
+<button id="associate" class ="ibm-btn-sec ibm-btn-blue-50">Associate</button>
+<button id="report" class ="ibm-btn-pri ibm-btn-blue-50">Report</button><br><br>
+</div>
+<br><hr>
+<table id= 'table' class ='centered'>
   <tr>
   	  <th colspan="2"><center>REPORT</center></th>
   </tr>
@@ -59,7 +60,6 @@
   </tr>
 </table>
 </div>
-
 
 <script type = "text/javascript" src = js/index.js></script>
 </body>

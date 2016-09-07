@@ -19,6 +19,8 @@ import javax.sql.DataSource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
+
 public class DatabaseQuery {
 
 	Context ctx = null;
@@ -40,6 +42,7 @@ public class DatabaseQuery {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
+		JSONObject jres = new JSONObject();
 //		ctx = new InitialContext();
 //		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
 		
@@ -71,7 +74,8 @@ public class DatabaseQuery {
 
 			if (rs.next()) {
 
-				return "association already exists!";
+				jres.put("response","association already exists!");
+				return jres.toString();
 			}
 
 			else {
@@ -80,18 +84,22 @@ public class DatabaseQuery {
 				preparedStatement.setString(1, room);
 				preparedStatement.setString(2, chair);			
 				preparedStatement.executeUpdate();
+				jres.put("response","Association recorded successfully! Thank you!");
+				
 			}
+			return jres.toString();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			jres.put("response","SQLException caught!CheckTrace");
+			return jres.toString();
+			
 		} finally {
 
 			try { if (con != null) con.close(); } catch (Exception e) {e.printStackTrace();};
 			try { if (rs != null) rs.close(); } catch (Exception e) {e.printStackTrace();};
 		    try { if (preparedStatement != null) preparedStatement.close(); } catch (Exception e) {e.printStackTrace();};
 		}
-
-		return "association successfull";
 	}
 
 	public String createResource(String name, String attribute)
@@ -99,9 +107,6 @@ public class DatabaseQuery {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
-//		ctx = new InitialContext();
-//		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
-		
 
 		try {
 			con = DBUtility.getConnection();
@@ -156,14 +161,9 @@ public class DatabaseQuery {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
-//		ctx = new InitialContext();
-//		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
-		
-		
-		
-		JSONObject jobj = new JSONObject();
-		JSONObject jerror = new JSONObject();
 
+		JSONObject jobj = new JSONObject();
+		
 		try {
 			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
@@ -219,12 +219,8 @@ public class DatabaseQuery {
 		String propFileName = "config.properties";
 //		ctx = new InitialContext();
 //		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
-		
-		
-		
 		JSONObject jobj = new JSONObject();
-		JSONObject jerror = new JSONObject();
-
+		
 		try {
 			//con = dataSource.getConnection();
 			con = DBUtility.getConnection();

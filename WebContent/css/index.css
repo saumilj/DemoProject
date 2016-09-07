@@ -1,6 +1,7 @@
 body {
 	
 	background-color: white;
+	height: 100%;
 }
 
 .btn {
@@ -45,6 +46,27 @@ body {
     width: 20%;
 }
 
+#Chairdropdown {
+	
+	width: 100px;
+}
+
+#Roomdropdown {
+	
+	width: 100px;
+}
+
+#structure {
+	
+	padding-left: 30%;
+}
+
+div.centered table 
+{
+    margin: 0 auto; 
+    text-align: left;
+}
+
 #report1 {
 	
 	border:0.5px solid black;
@@ -68,8 +90,7 @@ table {
 	display: none;
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 100%;
-    margin: 0 auto;
+    padding-left: 40%;
 }
 
 td, th {

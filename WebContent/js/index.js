@@ -20,10 +20,10 @@ $(document).ready(function(){
 			url: url+"associate/",
 			data: data,
 			contentType: 'application/json',
-			dataType: 'application/json',
+			dataType: 'json',
 			type: 'POST',				
 			success: function(data) {		   
-				alert(data); 
+				alert(data.response); 
 			}	
 		});	
 	})
