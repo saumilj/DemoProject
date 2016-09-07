@@ -1,6 +1,7 @@
 package com.ibm.java.demo.rest;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.naming.NamingException;
@@ -14,6 +15,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -32,14 +35,21 @@ public class RestApis {
 	public Response getChairs(@QueryParam("chair") String chairName){
 		
 		String res = null;
+		int status;
+		//ResponseBuilder res2 = null;
+		
 		try {
 				res = dbq.getNames("Chair");
+				status=200;
 			
 		} catch (FileNotFoundException | SQLException | NamingException e) {
-			// TODO Auto-generated catch block
+			status=404;
 			e.printStackTrace();
-		}			
-		return Response.ok(res).build();	
+			//res2.entity("response:"+e.getMessage());
+			
+		}		
+		// verify
+		return Response.status(status).entity(res).build();	
 	}
 	
 	@GET
@@ -50,78 +60,75 @@ public class RestApis {
 		String res = null;
 		try {
 			res = dbq.getNames("Room");
-		} catch (FileNotFoundException | SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}			
-		return Response.ok(res).build();	
+			return Response.status(200).entity(res).build();
+		} 
+		catch (FileNotFoundException e){e.printStackTrace(); return Response.status(404).entity("IO Exception").build();}	
+		catch(SQLException e){e.printStackTrace();return Response.status(501).entity("SQL Exception").build();}
+		catch(NamingException e){e.printStackTrace();return Response.status(501).entity("Naming Exception").build();}
 	}
 	
 	@GET
 	@Path("/report")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getReport(){
+	public Response getReport() throws JsonProcessingException{
 		
 		String res = null;
+		int status;
 		try {
 				res = dbq.getReport();
+				status=200; 
 			
 		} catch (FileNotFoundException | SQLException | NamingException e) {
 			// TODO Auto-generated catch block
+			status=404;
 			e.printStackTrace();
 		}			
-		return Response.ok(res).build();	
+		return Response.status(status).entity(res).build();
 	}
 	
 	@POST
 	@Path("/chair")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postChair(String f){
+	public Response postChair(String f) throws IOException{
 				
 		String response = null;	
 		JSONObject jobj = new JSONObject(f);
-		String name = jobj.getString("Name");
-		String attribute = jobj.getString("Attribute");
-		
 		//Single function to create new Chair/Room
 		try{
-			response = dbq.createResource(name, attribute);
+			response = dbq.createResource(jobj.getString("Name"), "Chair");
+			JSONObject jres = new JSONObject(response);
+			return Response.status(jres.getInt("code")).entity(jres.toString()).build();	
 		}
-		catch(FileNotFoundException | JSONException | SQLException | NamingException e){
-			e.printStackTrace();
-		}
+		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
+		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}
 		
-		JSONObject res = new JSONObject();
-		res.put("response","print");
-		System.out.print(response);
-		return Response.ok().entity(res.toString()).build();
+//		JSONObject res = new JSONObject();
+//		res.put("response","print");
+//		//System.out.print(response);
+//		return Response.status(status).entity(res.toString()).build();
 	}
 	
 	@POST
 	@Path("/room")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postRoom(String f){
+	public Response postRoom(String f) throws IOException{
 				
 		String response = null;
-		
 		JSONObject jobj = new JSONObject(f);
-		String name = jobj.getString("Name");
-		String attribute = jobj.getString("Attribute");
-		
-		//Single function to create new Chair/Room
 		try{
-			response = dbq.createResource(name, attribute);
+			response = dbq.createResource(jobj.getString("Name"), "Room");
+			JSONObject jres = new JSONObject(response);
+			return Response.status(jres.getInt("code")).entity(jres.toString()).build();	
 		}
-		catch(FileNotFoundException | JSONException | SQLException | NamingException e){
-			e.printStackTrace();
-		}
+		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
+		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}
 		
-		JSONObject res = new JSONObject();
-		res.put("response","print");
-		System.out.print(response);
-		return Response.ok().entity(res.toString()).build();
+//		JSONObject res = new JSONObject();
+//		res.put("response","print");
+//		System.out.print(response);
+//		return Response.status(status).entity(res.toString()).build();
 	}
 	
 	@POST
@@ -130,23 +137,15 @@ public class RestApis {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postAssociate(String f){
 				
-		String response = null;
-		
+		String response = null;	
 		JSONObject jobj = new JSONObject(f);
-		String room = jobj.getString("Room");
-		String chair = jobj.getString("Chair");
-		System.out.print("room: "+room);
-		System.out.print("chair: "+chair);
-		
-		//Single function to create new Chair/Room
 		try{
-			response = dbq.associate(room, chair);
+			response = dbq.associate(jobj.getString("Room"), jobj.getString("Chair"));
+			JSONObject jres = new JSONObject(response);
+			return Response.status(jres.getInt("code")).entity(jres.toString()).build();				
 		}
-		catch(FileNotFoundException | JSONException | SQLException | NamingException e){
-			e.printStackTrace();
-		}		
-		System.out.print(response);
-		return Response.ok().entity(response.toString()).build();
+		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
+		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}		
 	}
 	
 	@DELETE

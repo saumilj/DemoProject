@@ -15,6 +15,14 @@ $(document).ready(function(){
     
 	$("#associate").click(function(event){
 		
+		if (!txtChair.value.replace(/\s/g, '').length){	
+			alert("No Name given to the chair. Please specify a name for the chair!");
+			return;
+		}
+		if (!txtRoom.value.replace(/\s/g, '').length){	
+			alert("No Name given to the room. Please specify a name for the room!");
+			return;
+		}
 		var data = "{\"Chair\" : \""+txtChair.value+"\", \"Room\": \""+txtRoom.value+"\"}";
 		$.ajax({
 			url: url+"associate/",
@@ -24,7 +32,10 @@ $(document).ready(function(){
 			type: 'POST',				
 			success: function(data) {		   
 				alert(data.response); 
-			}	
+			},
+		error: function(data){
+			alert(data.responseText);
+		}
 		});	
 	})
 	$("#chair-submit").click(function(event){
@@ -35,17 +46,21 @@ $(document).ready(function(){
 			alert("No Name given to the chair you want to create. Please specify a name for the chair!")
 			return;
 		}
-		var data = "{\"Name\" : \""+chair+"\", \"Attribute\": \"Chair\"}";
+		var data = "{\"Name\" : \""+chair+"\"}";
 		$.ajax({
 			url: url+"chair/",
 			data: data,
 			contentType: 'application/json',
 			dataType: 'json',
-			type: 'POST',				
-			success: function(data) {		   
+			type: 'POST',
+			
+			success: function(data) {
+				alert(data.response);
 				location.reload();
-				//updateChairMenu(chair);
-			}	
+			},
+			error: function(data){
+			alert(data.responseText);
+		}
 		});	
 	});	 
 	  
@@ -57,19 +72,21 @@ $(document).ready(function(){
 		if (!room.replace(/\s/g, '').length){		
 			alert("No Name given to the room you want to create. Please specify a name for the room!")
 			return;
-		}
-		
-		var data = "{\"Name\" : \""+room+"\", \"Attribute\": \"Room\"}";
+		}	
+		var data = "{\"Name\" : \""+room+"\"}";
 		$.ajax({
 			url: url+"room/",
 			data: data,
 			contentType: 'application/json',
 			dataType: 'json',
 			type: 'POST',			
-
-			success: function(data) {		   
+			success: function(data) {
+				alert(data.response);
 				location.reload();
-			}	
+			},
+			error: function(data){
+				alert(data.responseText);
+			}
 		});	
     });
     
@@ -95,10 +112,7 @@ $(document).ready(function(){
     function roomresults(data){        
 		$.each(data, function(i,field){ 			
 			var option = $('<option />').val(field).text(field);			
-			//Populate the appropriate dropDown menu
-			var dropDown = (i.charAt(0)=='C' ? "#Chairdropdown" : "#Roomdropdown");	
-			// This is appending. But we just need to add the last entry added.
-		    $(dropDown).append(option);
+		    $("#Roomdropdown").append(option);
 		});
 	}
     
@@ -109,10 +123,7 @@ $(document).ready(function(){
     function chairresults(data){        
 		$.each(data, function(i,field){ 			
 			var option = $('<option />').val(field).text(field);			
-			//Populate the appropriate dropDown menu
-			var dropDown = (i.charAt(0)=='C' ? "#Chairdropdown" : "#Roomdropdown");	
-			// This is appending. But we just need to add the last entry added.
-		    $(dropDown).append(option);
+		    $("#Chairdropdown").append(option);
 		});
 	}
     

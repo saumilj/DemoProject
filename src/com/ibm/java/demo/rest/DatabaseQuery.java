@@ -1,6 +1,7 @@
 package com.ibm.java.demo.rest;
 
 import java.io.FileNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -8,6 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -19,6 +23,8 @@ import javax.sql.DataSource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 
 public class DatabaseQuery {
@@ -37,26 +43,16 @@ public class DatabaseQuery {
 	 * creates resource, which is either a new room or a new chair.
 	 */
 	
-	public String associate(String room, String chair)
-			throws FileNotFoundException, SQLException, NamingException {
+	public String associate(String room, String chair) throws IOException{
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
 		JSONObject jres = new JSONObject();
-//		ctx = new InitialContext();
-//		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
-		
-
 		try {
 			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
 			if (inputStream != null) {
-				try {
-					prop.load(inputStream);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					prop.load(inputStream);			
 			} else {
 				throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
 			}
@@ -75,6 +71,8 @@ public class DatabaseQuery {
 			if (rs.next()) {
 
 				jres.put("response","association already exists!");
+				jres.put("code",200);
+				
 				return jres.toString();
 			}
 
@@ -85,39 +83,45 @@ public class DatabaseQuery {
 				preparedStatement.setString(2, chair);			
 				preparedStatement.executeUpdate();
 				jres.put("response","Association recorded successfully! Thank you!");
-				
+				jres.put("code",200);
+				return jres.toString();
 			}
-			return jres.toString();
+			
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			jres.put("response","SQLException caught!CheckTrace");
+			jres.put("response","SQLException caught!");
+			jres.put("code",501);
 			return jres.toString();
-			
-		} finally {
+//			
+		} 
+//		catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			jres.put("response","IO Exception!");
+//			return jres.toString();
+//		} 
+		finally {
 
 			try { if (con != null) con.close(); } catch (Exception e) {e.printStackTrace();};
 			try { if (rs != null) rs.close(); } catch (Exception e) {e.printStackTrace();};
 		    try { if (preparedStatement != null) preparedStatement.close(); } catch (Exception e) {e.printStackTrace();};
 		}
+		
 	}
 
 	public String createResource(String name, String attribute)
-			throws FileNotFoundException, SQLException, NamingException {
+			throws SQLException, NamingException, IOException {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
+		JSONObject jres = new JSONObject();
 
 		try {
 			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
 			if (inputStream != null) {
-				try {
 					prop.load(inputStream);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			} else {
 				throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
 			}
@@ -135,7 +139,9 @@ public class DatabaseQuery {
 
 			if (rs.next()) {
 
-				return attribute + " with name '" + name + "' already exists. Please give a different Name!";
+				jres.put("response", attribute + " with name '" + name + "' already exists. Please give a different Name!");
+				jres.put("code",200);
+				return jres.toString();
 			}
 
 			else {
@@ -143,39 +149,34 @@ public class DatabaseQuery {
 				preparedStatement = con.prepareStatement(createResource);
 				preparedStatement.setString(1, name);
 				preparedStatement.executeUpdate();
+				jres.put("response",attribute + " '" + name + "' inserted successfully");
+				jres.put("code",200);
+				return jres.toString();
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
+			jres.put("response","SQLException caught!");
+			jres.put("code",501);
+			return jres.toString();
 		} finally {
-
 			try { if (con != null) con.close(); } catch (Exception e) {e.printStackTrace();};
 			try { if (rs != null) rs.close(); } catch (Exception e) {e.printStackTrace();};
 		    try { if (preparedStatement != null) preparedStatement.close(); } catch (Exception e) {e.printStackTrace();};
-		}
-
-		return attribute + " '" + name + "' inserted successfully";
+		}		
 	}
 	
 	public String getNames(String name) throws FileNotFoundException, SQLException, NamingException {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
-
 		JSONObject jobj = new JSONObject();
 		
 		try {
 			con = DBUtility.getConnection();
 			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
 			if (inputStream != null) {
-				try {
-					prop.load(inputStream);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				prop.load(inputStream);
 			} else {
-				
 				throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
 			}
 
@@ -191,29 +192,24 @@ public class DatabaseQuery {
 			String s = null;
 					
 			while (rs.next()) {
-
 				s = rs.getString(name + "Id");
 				jobj.put(name+i, s);
 				i++;
 			}
-
+			
 			System.out.print("JsonObject : "+ jobj.toString());
-			return jobj.toString();
-
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			return "{}";
 		} finally {
 
 			try { if (con != null) con.close(); } catch (Exception e) {e.printStackTrace();};
 			try { if (rs != null) rs.close(); } catch (Exception e) {e.printStackTrace();};
 		    try { if (preparedStatement != null) preparedStatement.close(); } catch (Exception e) {e.printStackTrace();};
 		}
-
-		//return "select query was successful";
+		return jobj.toString();
 	}	
 	
-	public String getReport() throws FileNotFoundException, SQLException, NamingException {
+	public String getReport() throws FileNotFoundException, SQLException, NamingException, JsonProcessingException {
 
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
@@ -243,17 +239,23 @@ public class DatabaseQuery {
 			 * Check if the ChairId to be created already exists. If yes, return
 			 * appropriate message. Else, create the requested ChairId
 			 */
-			String roomid	= null;
-			String chairid	= null;
-					
+			HashMap<String,List<String>> reportMap = new HashMap<>();					
 			while (rs.next()) {
-				roomid = rs.getString("RoomId");
-				chairid = rs.getString("ChairId");
-				jobj.put(roomid, chairid);
+				
+				String room = rs.getString("RoomId");
+				String chair = rs.getString("ChairId");
+				List<String> chairList = reportMap.get(room);
+				if(chairList==null){
+					chairList = new ArrayList<String>();
+					chairList.add(chair);
+					reportMap.put(room, chairList);
+				}
+				else{
+					if(!chairList.contains(chair)) chairList.add(chair);
+				}			
 			}
-			
-			System.out.print("JsonObject : "+ jobj.toString());
-			return jobj.toString();
+			String mapAsJson = new ObjectMapper().writeValueAsString(reportMap);
+			return mapAsJson;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -419,3 +421,9 @@ public class DatabaseQuery {
 //	return "select query was successful";
 //}
 //
+/* Implementation of report without using map			
+id = rs.getString("Id");
+roomid = rs.getString("RoomId");
+chairid = rs.getString("ChairId");
+jobj.put(id+"|"+roomid, chairid);
+*/
