@@ -57,6 +57,22 @@ public class RestApis {
 		return Response.ok(res).build();	
 	}
 	
+	@GET
+	@Path("/report")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getReport(){
+		
+		String res = null;
+		try {
+				res = dbq.getReport();
+			
+		} catch (FileNotFoundException | SQLException | NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+		return Response.ok(res).build();	
+	}
+	
 	@POST
 	@Path("/chair")
 	@Consumes(MediaType.APPLICATION_JSON)

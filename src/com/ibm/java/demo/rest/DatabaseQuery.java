@@ -207,6 +207,60 @@ public class DatabaseQuery {
 
 		//return "select query was successful";
 	}	
+	
+	public String getReport() throws FileNotFoundException, SQLException, NamingException {
+
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+		ctx = new InitialContext();
+		dataSource = (DataSource) ctx.lookup("jdbc/mySQL");
+		JSONObject jobj = new JSONObject();
+		JSONObject jerror = new JSONObject();
+
+		try {
+			con = dataSource.getConnection();
+			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
+			if (inputStream != null) {
+				try {
+					prop.load(inputStream);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {				
+				throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+			}
+
+			String getNames = prop.getProperty("report");
+			preparedStatement = con.prepareStatement(getNames);
+			ResultSet rs = preparedStatement.executeQuery();
+			/*
+			 * Check if the ChairId to be created already exists. If yes, return
+			 * appropriate message. Else, create the requested ChairId
+			 */
+			String roomid	= null;
+			String chairid	= null;
+					
+			while (rs.next()) {
+				roomid = rs.getString("RoomId");
+				chairid = rs.getString("ChairId");
+				jobj.put(roomid, chairid);
+			}
+			
+			System.out.print("JsonObject : "+ jobj.toString());
+			return jobj.toString();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "{}";
+		} finally {
+
+			try { if (con != null) con.close(); } catch (Exception e) {e.printStackTrace();};
+			try { if (rs != null) rs.close(); } catch (Exception e) {e.printStackTrace();};
+		    try { if (preparedStatement != null) preparedStatement.close(); } catch (Exception e) {e.printStackTrace();};
+		}
+	}	
+
 }
 //
 //public String getChair(String chairname)

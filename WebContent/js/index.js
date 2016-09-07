@@ -71,7 +71,22 @@ $(document).ready(function(){
 				location.reload();
 			}	
 		});	
-    });	 
+    });
+    
+    $("#report").click(function(event){
+    	
+    	$.getJSON(url+"report", report);
+    	
+    })
+    
+    function report(data){
+    	
+    	document.getElementById('table').style.display = "block";
+    	var div = document.getElementById('table');
+    	$.each(data, function(i,field){
+    		div.innerHTML = div.innerHTML + "<tr><td>"+i+"</td><td>"+field+"</td></tr>";
+    	})
+    }
     
     function roomMenu(){    	
     	$.getJSON(url+"room", roomresults)  	
@@ -86,6 +101,7 @@ $(document).ready(function(){
 		    $(dropDown).append(option);
 		});
 	}
+    
     function chairMenu(){    	
     	$.getJSON(url+"chair", chairresults)  	
     }
@@ -127,10 +143,8 @@ $(document).ready(function(){
     roomdropdown.onchange = function(){
     	txtRoom.value = this.value;
     }
+
 })
-
-
-
 
 //    function updateChairMenu(name){    	
 //    	$.getJSON(url+"chair",{chair:name},function(data){		

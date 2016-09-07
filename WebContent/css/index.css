@@ -45,3 +45,40 @@
     border: 1px solid #888;
     width: 20%;
 }
+
+#report1 {
+	
+	border:0.5px solid black;
+}
+
+.container { 
+    width: 300px;
+    border: 1px solid;
+    display: flex;
+    flex-direction: column;
+}
+
+.head {
+    border: 1px solid;
+    height: 45px;
+    padding-left:40%;
+    padding-top:10%;
+}
+
+table {
+	display: none;
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0 auto;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
