@@ -35,21 +35,13 @@ public class RestApis {
 	public Response getChairs(@QueryParam("chair") String chairName){
 		
 		String res = null;
-		int status;
-		//ResponseBuilder res2 = null;
-		
 		try {
-				res = dbq.getNames("Chair");
-				status=200;
-			
-		} catch (FileNotFoundException | SQLException | NamingException e) {
-			status=404;
-			e.printStackTrace();
-			//res2.entity("response:"+e.getMessage());
-			
-		}		
-		// verify
-		return Response.status(status).entity(res).build();	
+			res = dbq.getNames("Chair");
+			return Response.status(200).entity(res).build();
+		} 
+		catch (FileNotFoundException e){e.printStackTrace(); return Response.status(404).entity("IO Exception").build();}	
+		catch(SQLException e){e.printStackTrace();return Response.status(501).entity("SQL Exception").build();}
+		catch(NamingException e){e.printStackTrace();return Response.status(501).entity("Naming Exception").build();}
 	}
 	
 	@GET
@@ -102,11 +94,6 @@ public class RestApis {
 		}
 		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
 		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}
-		
-//		JSONObject res = new JSONObject();
-//		res.put("response","print");
-//		//System.out.print(response);
-//		return Response.status(status).entity(res.toString()).build();
 	}
 	
 	@POST
@@ -124,11 +111,6 @@ public class RestApis {
 		}
 		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
 		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}
-		
-//		JSONObject res = new JSONObject();
-//		res.put("response","print");
-//		System.out.print(response);
-//		return Response.status(status).entity(res.toString()).build();
 	}
 	
 	@POST

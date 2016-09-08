@@ -11,10 +11,10 @@ body {
 }
 
 #chairform {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 300px; 
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -25,10 +25,10 @@ body {
 }
 
 #roomform {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 300px; 
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -46,19 +46,54 @@ body {
     width: 20%;
 }
 
+#associate {
+	
+	background-color: grey;
+	font-size: 14px;
+	border-radius: 5px;
+	height: 30px;
+}
+
+#report {
+	
+	background-color: grey;
+	font-size: 14px;
+	border-radius: 5px;
+	height: 30px;
+}
+
+#txtChair{
+	
+	height: 20px;
+	font-size: 14px;
+	
+}
+#txtRoom{
+	
+	height: 20px;
+	font-size: 14px;
+}
+
+.title {
+	
+	color: grey;
+}
+
 #Chairdropdown {
 	
-	width: 100px;
+	width: 125px;
 }
 
 #Roomdropdown {
 	
-	width: 100px;
+	width: 125px;
 }
 
 #structure {
 	
 	padding-left: 30%;
+	border: 1px solid grey;
+	background-color: lightgrey;
 }
 
 div.centered table 
@@ -90,7 +125,7 @@ table {
 	display: none;
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    padding-left: 40%;
+    padding-left: 30%;
 }
 
 td, th {
@@ -98,7 +133,12 @@ td, th {
     text-align: left;
     padding: 8px;
 }
+th {
+	
+	text-align: center;
+	widht: 100px;
+}
 
 tr:nth-child(even) {
-    background-color: #dddddd;
+    background-color: grey;
 }

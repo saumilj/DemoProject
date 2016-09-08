@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-<link href="//1.www.s81c.com/common/v18/css/www.css" rel="stylesheet" />
-<script src="//1.www.s81c.com/common/v18/js/www.js"></script>
+<!-- <link href="//1.www.s81c.com/common/v18/css/www.css" rel="stylesheet" />
+ --><script src="//1.www.s81c.com/common/v18/js/www.js"></script>
 <link rel="stylesheet" type="text/css" href="css/index.css">
 <title>Floor Plan</title>
 </head>
 <body>
 
-<center><h1 class="ibm-h1 ibm-light ibm-textcolor-blue-50">CHAIR ARRANGEMENT</h1></center><hr><br><br>
+<center><h1 class= "title ibm-h1 ibm-light ibm-textcolor-blue-50">Chair Arrangement</h1></center><hr><br><br>
 
-<div id = "structure">
+<div id = "structure"><br>
 <div id="chairform" title="Create new chair" style = "display:none;">
   
   <div class="form-content">
@@ -35,21 +35,25 @@
   	</div>
 </div>
 
-<input type = "text" id="txtChair" placeholder="Select Chair"/>
+<input type = "text" id="txtChair" placeholder="Chair name"/>
 <select id="Chairdropdown">
+<option selected="selected">Select Chair</option>
+<option>[CREATE CHAIR]</option>
 </select>
 
-<button id="create-chair" class="ibm-btn-sec ibm-btn-blue-50">Create Chair</button><br><br>
+<br><br>
 
-<input type = "text" id="txtRoom" placeholder="Select Room"/>
+<input type = "text" id="txtRoom" placeholder="Room name"/>
 <select id="Roomdropdown">
+<option selected="selected">Select Room</option>
+<option>[CREATE ROOM]</option>
 </select>
-<button id="create-room" class ="ibm-btn-sec ibm-btn-blue-50">Create Room</button><br><br>
+<br><br>
 
-<button id="associate" class ="ibm-btn-sec ibm-btn-blue-50">Associate</button>
-<button id="report" class ="ibm-btn-pri ibm-btn-blue-50">Report</button><br><br>
+<button id="associate" class ="ibm-btn-sec ibm-btn-small ibm-btn-blue-50">Associate</button>
+<button id="report" class ="ibm-btn-pri ibm-btn-small ibm-btn-blue-50">Report</button><br><br>
 </div>
-<br><hr>
+<br>
 <table id= 'table' class ='centered'>
   <tr>
   	  <th colspan="2"><center>REPORT</center></th>
