@@ -14,8 +14,7 @@ td, th {
 }
 th {
 	
-	text-align: center;
-	width: 100px;
+	text-align: center;	
 }
 
 #chairform {
@@ -57,10 +56,4 @@ th {
 .structure {
 	
 	padding-left: 120px;
-}
-
-.divider{
-	
-    width:10px;
-    display:inline-block;
 }

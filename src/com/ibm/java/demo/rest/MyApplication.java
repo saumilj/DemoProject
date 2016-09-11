@@ -9,7 +9,9 @@ public class MyApplication extends Application {
 	    @Override
 	    public Set<Class<?>> getClasses() {
 	        Set<Class<?>> classes = new HashSet<Class<?>>();
-	        classes.add(RestApis.class);
+	        classes.add(combinationApis.class);
+	        classes.add(ChairApis.class);
+	        classes.add(RoomApis.class);
 	        return classes;
 	    }
 }

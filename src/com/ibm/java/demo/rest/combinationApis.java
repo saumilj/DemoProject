@@ -12,33 +12,13 @@ import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ibm.java.demo.db.DatabaseQuery;
-import com.ibm.java.demo.service.Chair;
 import com.ibm.java.demo.service.Report;
-import com.ibm.java.demo.service.Room;
 import com.ibm.java.demo.service.RoomChair;
 
 @Path("/service")
-public class RestApis {
+public class combinationApis {
 	
 	DatabaseQuery dbq = new DatabaseQuery();
-	
-	@GET
-	@Path("/chair")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getChairs(){
-		
-		Chair chair = new Chair();
-		return chair.getChairNames();
-	}
-	
-	@GET
-	@Path("/room")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRooms(){	
-		
-		Room room = new Room();
-		return room.getRoomNames();
-	}
 	
 	@GET
 	@Path("/report")
@@ -47,26 +27,6 @@ public class RestApis {
 		
 		Report report = new Report();
 		return report.generateReport();
-	}
-	
-	@POST
-	@Path("/chair")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response postChair(String chairName){	
-		
-		Chair chair = new Chair();
-		return chair.createChair(chairName);
-	}
-
-	@POST
-	@Path("/room")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response postRoom(String roomName){
-		
-		Room room = new Room();
-		return room.createRoom(roomName);
 	}
 	
 	@POST
