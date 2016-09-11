@@ -1,13 +1,21 @@
-body {
-	
-	background-color: white;
-	height: 100%;
-}
+@CHARSET "UTF-8";
 
-.btn {
+table {
+	display: none;
+	font-family: arial, sans-serif;
+    border-collapse: collapse;
+    padding-left: 30%;
+    /* width: 500px; */
+}
+ 
+td, th {
+    text-align: left;
+    padding: 8px;
+}
+th {
 	
-	background-color: lightgrey;
-	height: 20px;
+	text-align: center;
+	width: 100px;
 }
 
 #chairform {
@@ -46,99 +54,13 @@ body {
     width: 20%;
 }
 
-#associate {
+.structure {
 	
-	background-color: grey;
-	font-size: 14px;
-	border-radius: 5px;
-	height: 30px;
+	padding-left: 120px;
 }
 
-#report {
+.divider{
 	
-	background-color: grey;
-	font-size: 14px;
-	border-radius: 5px;
-	height: 30px;
-}
-
-#txtChair{
-	
-	height: 20px;
-	font-size: 14px;
-	
-}
-#txtRoom{
-	
-	height: 20px;
-	font-size: 14px;
-}
-
-.title {
-	
-	color: grey;
-}
-
-#Chairdropdown {
-	
-	width: 125px;
-}
-
-#Roomdropdown {
-	
-	width: 125px;
-}
-
-#structure {
-	
-	padding-left: 30%;
-	border: 1px solid grey;
-	background-color: lightgrey;
-}
-
-div.centered table 
-{
-    margin: 0 auto; 
-    text-align: left;
-}
-
-#report1 {
-	
-	border:0.5px solid black;
-}
-
-.container { 
-    width: 300px;
-    border: 1px solid;
-    display: flex;
-    flex-direction: column;
-}
-
-.head {
-    border: 1px solid;
-    height: 45px;
-    padding-left:40%;
-    padding-top:10%;
-}
-
-table {
-	display: none;
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    padding-left: 30%;
-}
-
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
-th {
-	
-	text-align: center;
-	widht: 100px;
-}
-
-tr:nth-child(even) {
-    background-color: grey;
+    width:10px;
+    display:inline-block;
 }

@@ -1,4 +1,4 @@
-package com.ibm.java.demo.rest;
+package com.ibm.java.demo.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;

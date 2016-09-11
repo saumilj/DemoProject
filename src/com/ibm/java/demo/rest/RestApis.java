@@ -1,62 +1,43 @@
 package com.ibm.java.demo.rest;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ibm.java.demo.db.DatabaseQuery;
+import com.ibm.java.demo.service.Chair;
+import com.ibm.java.demo.service.Report;
+import com.ibm.java.demo.service.Room;
+import com.ibm.java.demo.service.RoomChair;
 
 @Path("/service")
 public class RestApis {
 	
 	DatabaseQuery dbq = new DatabaseQuery();
-
+	
 	@GET
 	@Path("/chair")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getChairs(@QueryParam("chair") String chairName){
+	public Response getChairs(){
 		
-		String res = null;
-		try {
-			res = dbq.getNames("Chair");
-			return Response.status(200).entity(res).build();
-		} 
-		catch (FileNotFoundException e){e.printStackTrace(); return Response.status(404).entity("IO Exception").build();}	
-		catch(SQLException e){e.printStackTrace();return Response.status(501).entity("SQL Exception").build();}
-		catch(NamingException e){e.printStackTrace();return Response.status(501).entity("Naming Exception").build();}
+		Chair chair = new Chair();
+		return chair.getChairNames();
 	}
 	
 	@GET
 	@Path("/room")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRooms(){
-			
-		String res = null;
-		try {
-			res = dbq.getNames("Room");
-			return Response.status(200).entity(res).build();
-		} 
-		catch (FileNotFoundException e){e.printStackTrace(); return Response.status(404).entity("IO Exception").build();}	
-		catch(SQLException e){e.printStackTrace();return Response.status(501).entity("SQL Exception").build();}
-		catch(NamingException e){e.printStackTrace();return Response.status(501).entity("Naming Exception").build();}
+	public Response getRooms(){	
+		
+		Room room = new Room();
+		return room.getRoomNames();
 	}
 	
 	@GET
@@ -64,128 +45,45 @@ public class RestApis {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getReport() throws JsonProcessingException{
 		
-		String res = null;
-		int status;
-		try {
-				res = dbq.getReport();
-				status=200; 
-			
-		} catch (FileNotFoundException | SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			status=404;
-			e.printStackTrace();
-		}			
-		return Response.status(status).entity(res).build();
+		Report report = new Report();
+		return report.generateReport();
 	}
 	
 	@POST
 	@Path("/chair")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postChair(String f) throws IOException{
-				
-		String response = null;	
-		JSONObject jobj = new JSONObject(f);
-		//Single function to create new Chair/Room
-		try{
-			response = dbq.createResource(jobj.getString("Name"), "Chair");
-			JSONObject jres = new JSONObject(response);
-			return Response.status(jres.getInt("code")).entity(jres.toString()).build();	
-		}
-		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
-		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}
+	public Response postChair(String chairName){	
+		
+		Chair chair = new Chair();
+		return chair.createChair(chairName);
 	}
-	
+
 	@POST
 	@Path("/room")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postRoom(String f) throws IOException{
-				
-		String response = null;
-		JSONObject jobj = new JSONObject(f);
-		try{
-			response = dbq.createResource(jobj.getString("Name"), "Room");
-			JSONObject jres = new JSONObject(response);
-			return Response.status(jres.getInt("code")).entity(jres.toString()).build();	
-		}
-		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
-		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}
+	public Response postRoom(String roomName){
+		
+		Room room = new Room();
+		return room.createRoom(roomName);
 	}
 	
 	@POST
 	@Path("/associate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postAssociate(String f){
-				
-		String response = null;	
-		JSONObject jobj = new JSONObject(f);
-		try{
-			response = dbq.associate(jobj.getString("Room"), jobj.getString("Chair"));
-			JSONObject jres = new JSONObject(response);
-			return Response.status(jres.getInt("code")).entity(jres.toString()).build();				
-		}
-		catch (IOException e) {e.printStackTrace();return Response.status(501).entity("IO Exception caught").build();}
-		catch (Exception e) {e.printStackTrace();return Response.status(501).entity("Unidentified Exception caught").build();}		
+	public Response postAssociate(String names){
+		RoomChair rcs = new RoomChair();		
+		return rcs.associate(names);
 	}
 	
 	@DELETE
+	@Path("/remove/{ChairId}/{RoomId}")
 	@Consumes("APPLICATION/JSON")
-	public Response deleteResource(){
-		return Response.ok().entity("connection test").build();	
+	public Response deleteResource(@PathParam("ChairId") String chair, @PathParam("RoomId") String room){
+		
+		RoomChair rcs = new RoomChair();
+		return rcs.reassociate(room, chair);			
 	}
 }
-
-
-//@PUT
-//@Path("/chair")
-//@Consumes(MediaType.APPLICATION_JSON)
-//@Produces(MediaType.APPLICATION_JSON)
-//public Response postChair(String f){
-//			
-//	String response = null;
-//	JSONObject jobj = new JSONObject(f);
-//	String chair = jobj.getString("message");
-//	System.out.print(jobj.getString("message"));
-//	try {
-//		response = dbq.CreateChair(chair);
-//	} catch (NamingException e1) {
-//		e1.printStackTrace();
-//	}
-//	return Response.ok().entity("done").build();
-//}
-
-//@GET
-//@Path("/room/{room}")
-//@Produces(MediaType.APPLICATION_JSON)
-//public Response getRoom(@QueryParam("room") String roomName){
-//		
-//	String res = null;
-//	try {
-//		res = dbq.getRoom(roomName);
-//	} catch (FileNotFoundException | SQLException | NamingException e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}			
-//	return Response.ok(res).build();	
-//}
-
-
-//@GET
-//@Produces(MediaType.APPLICATION_JSON)
-//public Response getChairs(){
-//		
-//	Sample f = new Sample("Test","success");
-//	ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter(); // for serializing and printing in proper format
-//	String json = null;
-//			
-//	try {
-//		json = ow.writeValueAsString(f);
-//	} catch (JsonProcessingException e) {
-//		
-//		e.printStackTrace();
-//	}		
-//	return Response.ok(json).build();	
-//}
-//
