@@ -23,6 +23,7 @@ public class AssociationManager {
 			return Response.status(200).entity(response.toString()).build();				
 		}
 		catch (CustomException e){
+			//jsonobject
 			return Response.status(500).entity(e.getMessage()).build();
 		}		
 	}

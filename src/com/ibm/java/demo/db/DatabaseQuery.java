@@ -25,6 +25,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.java.demo.exception.CustomException;
 
 public class DatabaseQuery {
+	
+	private InputStream inputStream;
+	private Properties sqlProperties;
+	
+	public DatabaseQuery() {
+		
+		sqlProperties = new Properties();		
+		inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
+		
+		try{
+			if (inputStream != null) {
+				sqlProperties.load(inputStream);			
+			} else {
+				throw new IOException("Input Stream is null"); // comment
+			}
+		}catch (IOException e) {
+			
+			e.printStackTrace();
+			//throw new CustomException("property file '" + propertiesFileName + "' not found in the classpath",e);
+		}finally {
+			try{
+				if (inputStream != null)
+					inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
 
 	//Context ctx = null;
 	//Comment @Resource and change con = DBUtility.getConnection();
@@ -33,40 +61,20 @@ public class DatabaseQuery {
 	private Connection con = null;
 	private ResultSet rs = null;
 	public PreparedStatement preparedStatement = null;
-	private Properties sqlProperties = new Properties();
+	
 	private String propertiesFileName = "config.properties";
 
 	public JSONObject associateChairToRoom(String room, String chair) throws CustomException{
 		
-		InputStream inputStream = null;
 		try {
 			
-			inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
-			if (inputStream != null) {
-				sqlProperties.load(inputStream);			
-			} else {
-				throw new CustomException("Input Stream is null"); // comment
-			}			
 			con = DBUtility.getConnection();
 		}
 		catch(SQLException e){
 			
 			e.printStackTrace();		
 			throw new CustomException("SQLException occured while creating connection");
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-			throw new CustomException("property file '" + propertiesFileName + "' not found in the classpath",e);
-		}
-		finally{
-			
-			try {
-				if (inputStream != null)
-					inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-		}
+		} 
 		
 		try{
 			
@@ -76,7 +84,7 @@ public class DatabaseQuery {
 			rs = preparedStatement.executeQuery(); // try catch
 		
 			// break to 2 methods
-			if (rs.next()) {
+			if (rs.next()){
 				JSONObject response = new JSONObject();
 				response.put("response", "Association exists");
 				return response;
@@ -127,35 +135,15 @@ public class DatabaseQuery {
 	public JSONObject createResource(String name, String attribute)
 			throws CustomException {
 
-		InputStream inputStream = null;
 		try {			
-			inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
-			if (inputStream != null) {
-				sqlProperties.load(inputStream);
-				inputStream.close();
-			}
 			con = DBUtility.getConnection();
 		}catch(SQLException e){
 			
 			e.printStackTrace();
 			throw new CustomException("SQLException occured while creating connection");
 		}
-		catch(IOException e){
-			
-			e.printStackTrace();
-			throw new CustomException("property file '" + propertiesFileName + "' not found in the classpath",e);
-		}
-		finally{
-			
-			try {
-				if (inputStream != null)
-					inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace(); // customException
-			}	 
-		}
-		try{
 		
+		try{		
 			// break into 2 methods
 			String checkResource = MessageFormat.format((String) sqlProperties.get("checkResource"), attribute + "Id", attribute, attribute + "Id");
 			preparedStatement = con.prepareStatement(checkResource);
@@ -172,6 +160,8 @@ public class DatabaseQuery {
 				JSONObject response = new JSONObject();
 				response.put("response", attribute + " with name '" + name + "' already exists. Please give a different Name!");				
 				return response;
+				//return false;
+				
 			}
 
 			else {
@@ -180,9 +170,10 @@ public class DatabaseQuery {
 				preparedStatement.setString(1, name);
 				preparedStatement.executeUpdate();
 				
-				JSONObject jres = new JSONObject();
-				jres.put("response", attribute + " '" + name + "' inserted successfully");
-				return jres;
+				JSONObject response = new JSONObject();
+				response.put("response", attribute + " '" + name + "' inserted successfully");
+				return response;
+				//return true;
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -216,33 +207,14 @@ public class DatabaseQuery {
 	public JSONObject getNames(String name) throws CustomException {
 
 		JSONObject jobj = new JSONObject();
-		InputStream inputStream = null;
 		try {
-			
-			inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
-			if (inputStream != null) {
-				sqlProperties.load(inputStream);
-			}
 			con = DBUtility.getConnection();
 		}catch(SQLException e){
 			
 			e.printStackTrace();
 			throw new CustomException("SQLException occured while creating connection");
 		}
-		catch(IOException e){
-			
-			e.printStackTrace();
-			throw new CustomException("property file '" + propertiesFileName + "' not found in the classpath",e);
-		}
-		finally{
-			
-			try {
-				if (inputStream != null)
-					inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace(); // customException
-			}	 
-		}
+		
 		try{
 
 			String getNames = MessageFormat.format((String) sqlProperties.get("getNames"), name + "Id", name);
@@ -287,33 +259,15 @@ public class DatabaseQuery {
 
 	public String delete(String room, String chair) throws FileNotFoundException, SQLException, NamingException, CustomException {
 	
-		InputStream inputStream = null;
 		try {
 			
-			inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
-			if (inputStream != null) {
-				sqlProperties.load(inputStream);
-			}
 			con = DBUtility.getConnection();
 		}catch(SQLException e){
 			
 			e.printStackTrace();
 			throw new CustomException("SQLException occured while creating connection");
 		}
-		catch(IOException e){
-			
-			e.printStackTrace();
-			throw new CustomException("property file '" + propertiesFileName + "' not found in the classpath",e);
-		}
-		finally{
-			
-			try {
-				if (inputStream != null)
-					inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace(); // customException
-			}	 
-		}
+		
 		try{
 			String getNames = sqlProperties.getProperty("deleteRC");
 			preparedStatement = con.prepareStatement(getNames);
@@ -351,32 +305,12 @@ public class DatabaseQuery {
 
 	public String getReport() throws CustomException {
 
-		InputStream inputStream = null;
 		try {
-			
-			inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
-			if (inputStream != null) {
-				sqlProperties.load(inputStream);
-			}
 			con = DBUtility.getConnection();
 		}catch(SQLException e){
 			
 			e.printStackTrace();
 			throw new CustomException("SQLException occured while creating connection");
-		}
-		catch(IOException e){
-			
-			e.printStackTrace();
-			throw new CustomException("property file '" + propertiesFileName + "' not found in the classpath",e);
-		}
-		finally{
-			
-			try {
-				if (inputStream != null)
-					inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace(); // customException
-			}	 
 		}
 		try{
 
