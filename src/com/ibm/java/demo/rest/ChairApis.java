@@ -1,5 +1,9 @@
 package com.ibm.java.demo.rest;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -9,7 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.ibm.java.demo.db.DatabaseQuery;
-import com.ibm.java.demo.service.Chair;
+import com.ibm.java.demo.exception.CustomException;
+import com.ibm.java.demo.service.ChairManager;
 
 @Path("/service")
 public class ChairApis {
@@ -19,10 +24,10 @@ public class ChairApis {
 	@GET
 	@Path("/chair")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getChairs(){
+	public Response getChairs() throws SQLException, NamingException, IOException, CustomException{
 		
-		Chair chair = new Chair();
-		return chair.getChairNames();
+		ChairManager chairManager = new ChairManager();
+		return chairManager.getChairNames();
 	}
 	
 	@POST
@@ -31,7 +36,7 @@ public class ChairApis {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postChair(String chairName){	
 		
-		Chair chair = new Chair();
-		return chair.createChair(chairName);
+		ChairManager chairManager = new ChairManager();
+		return chairManager.createChair(chairName);
 	}
 }

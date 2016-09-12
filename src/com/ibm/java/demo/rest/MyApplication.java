@@ -9,7 +9,7 @@ public class MyApplication extends Application {
 	    @Override
 	    public Set<Class<?>> getClasses() {
 	        Set<Class<?>> classes = new HashSet<Class<?>>();
-	        classes.add(combinationApis.class);
+	        classes.add(CombinationApis.class);
 	        classes.add(ChairApis.class);
 	        classes.add(RoomApis.class);
 	        return classes;

@@ -1,5 +1,9 @@
 package com.ibm.java.demo.rest;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -9,7 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.ibm.java.demo.db.DatabaseQuery;
-import com.ibm.java.demo.service.Room;
+import com.ibm.java.demo.exception.CustomException;
+import com.ibm.java.demo.service.RoomManager;;
 
 @Path("/service")
 public class RoomApis {
@@ -19,10 +24,10 @@ public class RoomApis {
 	@GET
 	@Path("/room")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRooms(){	
+	public Response getRooms() throws SQLException, NamingException, IOException, CustomException{	
 		
-		Room room = new Room();
-		return room.getRoomNames();
+		RoomManager roomManager = new RoomManager();
+		return roomManager.getRoomNames();
 	}
 	
 	@POST
@@ -31,7 +36,7 @@ public class RoomApis {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postRoom(String roomName){
 		
-		Room room = new Room();
-		return room.createRoom(roomName);
+		RoomManager roomManager = new RoomManager();
+		return roomManager.createRoom(roomName);
 	}
 }

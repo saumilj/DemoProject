@@ -148,7 +148,7 @@ $(document).ready(function(){
 	
 	function associateSuccessResponse(data){
     	
-    	if(data.response=="exists"){
+    	if(data.response=="Association exists"){
     		
     		var retVal = confirm("This chair is already associated with a room. Do you want to continue and reallocate ?");
             if( retVal == true ){
@@ -156,7 +156,7 @@ $(document).ready(function(){
             }
     	}
     	else{  		
-    		alert(data.response); 
+    		alert(data.responseText); 
     	}
     }
 	
@@ -181,7 +181,7 @@ $(document).ready(function(){
 				
 			},
 			error: function(data){
-				alert(data.responseText);
+				alert("here" + data.response);
 			}
 		});	
 	}
