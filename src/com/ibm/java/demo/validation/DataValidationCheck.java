@@ -1,6 +1,8 @@
-package com.ibm.java.demo.exception;
+package com.ibm.java.demo.validation;
 
 import org.json.JSONObject;
+
+import com.ibm.java.demo.exception.InvalidDataException;
 
 public class DataValidationCheck {
 	

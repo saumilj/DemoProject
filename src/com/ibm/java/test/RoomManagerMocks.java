@@ -12,8 +12,8 @@ import org.mockito.Mockito;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.entity.Room;
-import com.ibm.java.demo.exception.RoomException;
 import com.ibm.java.demo.exception.CustomException;
+import com.ibm.java.demo.exception.RoomException;
 import com.ibm.java.demo.service.RoomManager;
 
 public class RoomManagerMocks {
@@ -34,6 +34,28 @@ public class RoomManagerMocks {
 		RoomManager cm = new RoomManager(test);
 		JSONObject s = cm.createRoom(json);
 		Assert.assertThat(s.toString(), CoreMatchers.containsString("Room inserted successfully successfully"));
+	}
+	
+	@Test
+	public void CreateRoomTestRoomException() throws CustomException, RoomException{
+		
+		when(test.createRoom(isA(Room.class))).thenThrow(new RoomException());
+		String json = "{'Name':'myroom'}";
+		RoomManager cm = new RoomManager(test);
+		JSONObject s = cm.createRoom(json);
+		System.out.print(s.toString());
+		Assert.assertThat(s.toString(), CoreMatchers.containsString("response"));
+	}
+	
+	@Test
+	public void CreateRoomTestCustomException() throws CustomException, RoomException{
+		
+		when(test.createRoom(isA(Room.class))).thenThrow(new CustomException());
+		String json = "{'Name':'myroom'}";
+		RoomManager cm = new RoomManager(test);
+		JSONObject s = cm.createRoom(json);
+		System.out.print(s.toString());
+		Assert.assertThat(s.toString(), CoreMatchers.containsString("500"));
 	}
 
 }

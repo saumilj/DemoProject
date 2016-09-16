@@ -58,12 +58,11 @@ public class DatabaseQuery {
 				}
 			
 		} catch (IOException e) {
-
+			
 			e.printStackTrace();
-			// throw new CustomException("property file '" + propertiesFileName
-			// + "' not found in the classpath",e);
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} finally {
 			try {
@@ -74,32 +73,13 @@ public class DatabaseQuery {
 			}
 		}
 	}
-
-	// Context ctx = null;
-	// Comment @Resource and change con = DBUtility.getConnection();
-	// @Resource(lookup = "jdbc/mysql")
-	// private DataSource dataSource;
 	
-
 	/*
 	 * Implement query to create association between chair and room.
 	 */
 	public JSONObject associateChairToRoom(String room, String chair) throws CustomException {
 
-//		try {
-//			if (Dev == true) {
-//				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
-//			} else {
-//				con = ConnectionManager.getConnection();
-//			}
-//		} catch (SQLException e) {
-//
-//			e.printStackTrace();
-//			throw new CustomException("SQLException occured while creating connection");
-//		}
-
 		try {
-
 			/*
 			 * Get query from properties file and execute the prepared statement
 			 */
@@ -166,19 +146,6 @@ public class DatabaseQuery {
 
 	public Chair createChair(Chair chair) throws CustomException, ChairException {
 
-		//Dependency Injection
-//		try {
-//			if (Dev == true) {
-//				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
-//			} else {
-//				con = ConnectionManager.getConnection();
-//			}
-//		} catch (SQLException e) {
-//
-//			e.printStackTrace();
-//			throw new CustomException("SQLException occured while creating connection");
-//		}
-
 		try {
 			String checkChair = sqlProperties.getProperty("checkChair");
 			preparedStatement = con.prepareStatement(checkChair);
@@ -191,7 +158,7 @@ public class DatabaseQuery {
 			 */
 			if (rs.next()) {
 
-				throw new ChairException(chair.getChairName() + " already exists. Please give other name");
+				throw new ChairException(chair.getChairName()+" Chair already exists. Please give other name");
 			}
 
 			/*
@@ -276,11 +243,6 @@ public class DatabaseQuery {
 				preparedStatement.setString(1, room.getRoomName());
 				preparedStatement.executeUpdate();
 
-				int Id = returnLastId();
-				if (Id == -1) {
-					throw new CustomException("Last Inserted Id was not retrieved");
-				}
-				
 				room.setRoomId(UUID.randomUUID().toString());
 				return room;
 				
@@ -332,7 +294,7 @@ public class DatabaseQuery {
 				jobj.put(name + i, s);
 				i++;
 			}
-			// if rs empty. exception
+			
 			jobj.put("status", 200);
 			return jobj;
 
@@ -415,15 +377,7 @@ public class DatabaseQuery {
 
 	public JSONObject getReport() throws CustomException {
 
-		try {
-			con = ConnectionManager.getConnection();
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-			throw new CustomException("SQLException occured while creating connection");
-		}
-		try {
-
+			try {
 			/*
 			 * Retrieve data of all room-chair associations from database
 			 */
@@ -451,8 +405,7 @@ public class DatabaseQuery {
 						chairList.add(chair);
 				}
 			}
-			// rs.exception
-
+			
 			String mapAsJson = new ObjectMapper().writeValueAsString(reportMap);
 			JSONObject response = new JSONObject(mapAsJson);
 			response.put("status", 200);
@@ -649,59 +602,4 @@ public class DatabaseQuery {
 			}
 		}
 	}
-
-	public int returnLastId() throws CustomException {
-
-//		try {
-//
-//			if (Dev == true) {
-//				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
-//			} else {
-//				con = ConnectionManager.getConnection();
-//			}
-//
-//		} catch (SQLException e) {
-//
-//			e.printStackTrace();
-//			throw new CustomException("SQLException occured while creating connection");
-//		}
-
-		String lastId = sqlProperties.getProperty("lastId");
-		try {
-			preparedStatement = con.prepareStatement(lastId);
-			rs = preparedStatement.executeQuery();
-
-			if (rs.next()) {
-				return rs.getInt("LAST_INSERT_ID()");
-			}
-
-			return -1;
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-			throw new CustomException("Query to retreive last Id was not executed");
-		} finally {
-
-			try {
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			try {
-				if (preparedStatement != null)
-					preparedStatement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 }

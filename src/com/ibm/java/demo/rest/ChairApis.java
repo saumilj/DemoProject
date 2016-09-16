@@ -1,9 +1,5 @@
 package com.ibm.java.demo.rest;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,8 +13,7 @@ import javax.ws.rs.core.Response;
 import org.json.JSONObject;
 
 import com.ibm.java.demo.db.DatabaseQuery;
-import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.exception.DataValidationCheck;
+import com.ibm.java.demo.validation.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.ChairManager;

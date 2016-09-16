@@ -8,7 +8,7 @@ import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.entity.Room;
 import com.ibm.java.demo.exception.RoomException;
 import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.exception.DataValidationCheck;
+import com.ibm.java.demo.validation.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.exception.RoomException;
@@ -41,13 +41,21 @@ DataValidationCheck validate = new DataValidationCheck();
 			
 			return response;
 			
-		}catch (CustomException | RoomException e){
+		}catch (RoomException e){
+			
+			//formulate a response object
+			JSONObject errResponse = new JSONObject();
+			errResponse.put("response", "Room already exists");
+			errResponse.put("status", 500);
+			
+			return errResponse;
+		}
+		catch (CustomException e){
 			
 			//formulate a response object
 			JSONObject errResponse = new JSONObject();
 			errResponse.put("response", e.getMessage());
 			errResponse.put("status", 500);
-			System.out.print(errResponse.get("response").toString());
 			
 			return errResponse;
 		}

@@ -1,17 +1,13 @@
 package com.ibm.java.test;
 
-import static org.junit.Assert.*;
-
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import com.ibm.java.demo.db.*;
+import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.CustomException;
 
-public class DbGetNames {
+public class DbAssociateTests {
 	
 	DatabaseQuery dbq = new DatabaseQuery();
 	
@@ -20,6 +16,5 @@ public class DbGetNames {
 		dbq.Dev = true;	
 		JSONObject jobj = dbq.associateChairToRoom("roomdbtest", "chairdbtest");
 		Assert.assertThat(jobj.toString(), CoreMatchers.containsString("Association exists"));		
-	}
-	
+	}	
 }

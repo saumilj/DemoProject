@@ -2,7 +2,6 @@ package com.ibm.java.demo.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -12,14 +11,12 @@ import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.exception.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
-import com.ibm.java.demo.service.ReportManager;
-import com.ibm.java.demo.service.AssociationManager;;
+import com.ibm.java.demo.service.AssociationManager;
+import com.ibm.java.demo.validation.DataValidationCheck;
 
 @Path("/associate")
 public class AssociationApis {

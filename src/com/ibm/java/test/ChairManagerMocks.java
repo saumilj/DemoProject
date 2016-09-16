@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.internal.stubbing.answers.ThrowsException;
 
 import static org.mockito.Mockito.*;
 
@@ -34,6 +35,28 @@ public class ChairManagerMocks {
 		ChairManager cm = new ChairManager(test);
 		JSONObject s = cm.createChair(json);
 		Assert.assertThat(s.toString(), CoreMatchers.containsString("Chair inserted successfully successfully"));
+	}
+	
+	@Test
+	public void CreateChairTestChairException() throws CustomException, ChairException{
+		
+		when(test.createChair(isA(Chair.class))).thenThrow(new ChairException());
+		String json = "{'Name':'existingchair'}";
+		ChairManager cm = new ChairManager(test);
+		JSONObject s = cm.createChair(json);
+		System.out.print(s.toString());
+		Assert.assertThat(s.toString(), CoreMatchers.containsString("500"));
+	}
+	
+	@Test
+	public void CreateChairTestCustomException() throws CustomException, ChairException{
+		
+		when(test.createChair(isA(Chair.class))).thenThrow(new CustomException());
+		String json = "{'Name':'existingchair'}";
+		ChairManager cm = new ChairManager(test);
+		JSONObject s = cm.createChair(json);
+		System.out.print(s.toString());
+		Assert.assertThat(s.toString(), CoreMatchers.containsString("500"));
 	}
 
 }

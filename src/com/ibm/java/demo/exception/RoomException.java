@@ -2,9 +2,6 @@ package com.ibm.java.demo.exception;
 
 public class RoomException extends Exception {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public RoomException() {

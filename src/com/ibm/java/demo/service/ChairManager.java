@@ -5,7 +5,7 @@ import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.entity.Chair;
 import com.ibm.java.demo.exception.ChairException;
 import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.exception.DataValidationCheck;
+import com.ibm.java.demo.validation.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 
@@ -33,22 +33,23 @@ public class ChairManager {
 			
 			//formulate a response object
 			JSONObject response = new JSONObject();
-			response.put("response","Chair inserted successfully successfully.");
 			response.put("status", 200);
-//			System.out.print(chair.getChairName());
-//			System.out.print(chair.getChairId());
-//			
+			response.put("response","Chair inserted successfully.");
 			response.put("Id", chair.getChairId());	
 			
 			return response;
 			
-		}catch (CustomException | ChairException e){
+		}catch (CustomException e){
 			
-			//formulate a response object
 			JSONObject errResponse = new JSONObject();
 			errResponse.put("response", e.getMessage());
 			errResponse.put("status", 500);
+			return errResponse;
+		}catch (ChairException e){
 			
+			JSONObject errResponse = new JSONObject();
+			errResponse.put("response", e.getMessage());
+			errResponse.put("status", 500);
 			return errResponse;
 		}
 	}	

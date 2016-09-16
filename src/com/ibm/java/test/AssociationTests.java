@@ -1,19 +1,12 @@
 package com.ibm.java.test;
 
-import static org.junit.Assert.fail;
-
 import javax.ws.rs.core.Response;
 
-import org.hamcrest.CoreMatchers;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.rest.AssociationApis;
-import com.ibm.java.demo.service.AssociationManager;
-import com.ibm.java.demo.service.ChairManager;
 
 public class AssociationTests {
 
@@ -33,7 +26,4 @@ public class AssociationTests {
 		Response response = aapis.postAssociate(null);
 		Assert.assertEquals(response.getStatus(),500);
 	}
-
-	// Check if param is in json format
-
 }

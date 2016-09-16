@@ -1,7 +1,5 @@
 package com.ibm.java.demo.entity;
 
-import java.util.UUID;
-
 public class Chair {
 
 	private String chairName;
@@ -24,9 +22,9 @@ public class Chair {
 		this.chairName = chairName;
 	}
 	
-	public void setChairId(String uuid){
+	public void setChairId(String Id){
 		
-		this.Id = uuid;
+		this.Id = Id;
 	}
 	
 	public String getChairId(){

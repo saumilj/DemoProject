@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.exception.DataValidationCheck;
+import com.ibm.java.demo.validation.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.RoomManager;

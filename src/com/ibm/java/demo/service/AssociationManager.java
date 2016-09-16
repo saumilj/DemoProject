@@ -5,16 +5,13 @@ import org.json.JSONObject;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.exception.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 
 public class AssociationManager {
 
 	DatabaseQuery dbq = new DatabaseQuery();
-	DataValidationCheck validate = new DataValidationCheck();
-
-	/*
+		/*
 	 * Call function to execute queries to create association between chair and
 	 * room
 	 */
@@ -66,6 +63,9 @@ public class AssociationManager {
 		}
 	}
 
+	/*
+	 * Changes arrangement based on drag-drop actions
+	 */
 	public JSONObject changeAssociation(String json) throws InvalidDataException, InvalidResponseException {
 		
 		JSONObject jobj = new JSONObject(json);
