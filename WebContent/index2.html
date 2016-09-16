@@ -3,21 +3,20 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-latest.js"></script>
-<link rel="stylesheet" type="text/css" href="css/index.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 <link rel="shortcut icon" href="//www.ibm.com/favicon.ico" />
 <link href="//1.www.s81c.com/common/v18/css/www.css" rel="stylesheet" />
 <script src="//1.www.s81c.com/common/v18/js/www.js"></script>
 <link href="//1.www.s81c.com/common/v18/css/forms.css" rel="stylesheet">
 <script src="//1.www.s81c.com/common/v18/js/forms.js"></script>
-
+<link rel="stylesheet" type="text/css" href="css/index.css">
 <link href="//1.www.s81c.com/common/v18/css/tables.css" rel="stylesheet">
 <script src="//1.www.s81c.com/common/v18/js/tables.js"></script>
-<script
-	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju-1.11.4/dt-1.10.12/fh-3.1.2/rr-1.1.2/sc-1.4.2/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/ju-1.11.4/dt-1.10.12/fh-3.1.2/rr-1.1.2/sc-1.4.2/datatables.min.js"></script>
+
 
 <meta name="geo.country" content="US" />
 <meta name="dcterms.rights" content="© Copyright IBM Corp. 2016" />
@@ -131,95 +130,84 @@
 			<div id="ibm-pcon">
 				<div id="ibm-content">
 					<div id="ibm-content-body">
-						<br> <br>
-						<div class="parentStructure">
-						<div class=structure>
+						<br> <br>	
+							<div class=structure>
 							<label class="title ibm-h4 ibm-light ibm-textcolor-blue-50">
-								Room</label> <select id="Roomdropdown">
-								<option selected="selected">Select Room</option>
-								<option>[CREATE ROOM]</option>
-							</select> <label class="title ibm-h4 ibm-light ibm-textcolor-blue-50">
+								Room</label> 
+								<select id="Roomdropdown">
+									<option selected="selected">Select Room</option>
+									<option>[CREATE ROOM]</option>
+								</select> 
+							
+							<label class="title ibm-h4 ibm-light ibm-textcolor-blue-50">
 								Chair&nbsp; </label><select id="Chairdropdown">
 								<option selected="selected">Select Chair</option>
 								<option>[CREATE CHAIR]</option>
 							</select> <br> <br> <br>
 
 							<p>
-								<button type="button" id="deleteChair"
+									<!-- <button type="button" id="deleteChair"
 									class="ibm-btn-pri ibm-btn-blue-50">Delete Chair&nbsp;</button>
+									
 								<button type="button" id="associate"
-									class="ibm-btn-pri ibm-btn-blue-50">Create Allocation
-								</button>
-								<button type="button" id="deleteRoom"
+									class="ibm-btn-pri ibm-btn-blue-50">Create Allocation 
+									</button><br>
+									<button type="button" id="deleteRoom"
 									class="ibm-btn-pri ibm-btn-blue-50">Delete Room</button>
 								<button type="button" id="report"
 									class="ibm-btn-pri ibm-btn-blue-50">Generate Report</button>
-
-								<button type="button" id="showArrangement"
-									class="ibm-btn-pri ibm-btn-blue-50">Show Arrangement</button>
-
+								 -->
+									
 							</p>
+							<br>							
+							<hr>							
 							<br>
-							<hr>
-							<br>
-
 							<div>
-								<table id="test1table" class="ibm-data-table ibm-altcols"
-									data-paging="true" data-info="true">
-									<thead>
-										<tr>
-											<th colspan="2"><center>
-													<h2>Report</h2>
-												</center></th>
-										</tr>
-										<tr>
-											<th>RoomId</th>
-											<th>ChairId</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
+								<table id="test1table" class="ibm-data-table ibm-altcols" data-paging="true" data-info="true">
+								<thead>
+									<tr>
+										<th colspan="2"><center><h2>Report</h2></center></th>
+									</tr>
+									<tr>
+										<th>RoomId</th>
+										<th>ChairId</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
 								</table>
 							</div>
+							<div>
+							</div>
 							
-							<div class="room-section" id="rooms"></div><br>
-							<br>
-
-						</div>
-						<div class= "structure2">
-						<button type="button" id="submitChange"
-								class="ibm-btn-pri ibm-btn-blue-50">Submit Change</button><br><br>
-						</div>
-						</div>
-						<br>
-						<br>
-
+						</div><br><br>
+	
 						<div id="ibm-content-main"></div>
 					</div>
 				</div>
 			</div>
-			<div id="chairform" title="Create new chair" style="display: none;">
-
-				<div class="form-content">
-					<form>
-						<label for="name">Chair Name</label> <input type="text"
-							name="name" id="chair"> <br>
-						<br> <input type="submit" id="chair-submit" value="submit">
-					</form>
-				</div>
-			</div>
-			<!-- <div class="ibm-common-overlay" data-widget="overlay" id="overlayExampleSmall">
+			<div id="chairform" title="Create new chair" style = "display:none;">
+  
+  <div class="form-content">
+    	<form>
+    		<label for="name">Chair Name</label>
+      		<input type="text" name="name" id="chair"> <br><br>     
+    		 <input type="submit" id = "chair-submit" value = "submit">    		
+  		</form>
+  	</div>
+</div>
+	<!-- <div class="ibm-common-overlay" data-widget="overlay" id="overlayExampleSmall">
         <p>Room</p>
 	</div> -->
-			<div id="roomform" title="Create new room" style="display: none;">
-				<div class="form-content">
-					<form>
-						<label for="name">Room Name</label> <input type="text" name="name"
-							id="room"><br>
-						<br> <input type="submit" id="room-submit" value="submit">
-					</form>
-				</div>
-			</div>
+<div id="roomform" title="Create new room" style = "display:none;">
+  <div class="form-content">
+    	<form>
+    		<label for="name">Room Name</label>
+      		<input type="text" name="name" id="room"><br><br>      
+    		 <input type="submit" id = "room-submit" value = "submit">  		
+  		</form>
+  	</div>
+</div>	
 			</main>
 
 			<div id="ibm-related-content">
@@ -246,6 +234,7 @@
 		</footer>
 		<!-- FOOTER_END -->
 	</div>
-	<script type="text/javascript" src=js/index.js></script>
+	<script type="text/javascript" src=js/index2.js></script>
+
 </body>
 </html>

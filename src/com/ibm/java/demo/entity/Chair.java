@@ -4,6 +4,8 @@ public class Chair {
 
 	private String chairName;
 	
+	public Chair(){}
+	
 	public Chair(String chairName){
 		
 		this.chairName = chairName;

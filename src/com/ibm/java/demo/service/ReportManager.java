@@ -1,22 +1,32 @@
 package com.ibm.java.demo.service;
 
-import javax.ws.rs.core.Response;
+import org.json.JSONObject;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.CustomException;
+import com.ibm.java.demo.exception.InvalidResponseException;
 
 public class ReportManager {
 
 	DatabaseQuery dbq = new DatabaseQuery();
 	
-	public Response generateReport() {
+	/*
+	 * Call function to execute query to get all room-chair associations and return as a JSONObject to apis
+	 */
+	public JSONObject generateReport() throws InvalidResponseException {
 		
 		try{
-			String responseStr = dbq.getReport();
-			return Response.status(200).entity(responseStr).build();
+			JSONObject response = dbq.getReport();
+			if(!response.has("status")){
+				throw new InvalidResponseException("Illegal response from server while retreiving report");
+			}
+			return response;		
 		}
 		catch (CustomException e){
-			return Response.status(500).entity(e.getMessage()).build();
+			JSONObject errResponse = new JSONObject();
+			errResponse.put("response", e.getMessage());
+			errResponse.put("status", 500);
+			return errResponse;	
 		}
 	}
 }
