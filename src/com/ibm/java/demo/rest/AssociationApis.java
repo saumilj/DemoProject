@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.CustomException;
+import com.ibm.java.demo.exception.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.ReportManager;
@@ -24,7 +25,7 @@ import com.ibm.java.demo.service.AssociationManager;;
 public class AssociationApis {
 	
 	DatabaseQuery dbq = new DatabaseQuery();
-	
+	DataValidationCheck validate = new DataValidationCheck();
 	/*
 	 * Create an association of a chair to a room
 	 */
@@ -34,9 +35,19 @@ public class AssociationApis {
 	public Response postAssociate(String names){
 		AssociationManager associationManager = new AssociationManager();		
 		JSONObject response;
+		try{
+			validate.checkEmpty(names);
+			validate.checkKeys(names, "Room");
+			validate.checkKeys(names, "Chair");			
+		
+		}catch(InvalidDataException e){
+			e.printStackTrace();		
+			return Response.status(500).entity(e.getMessage()).build();	
+		}
+		
 		try {
 			response = associationManager.associate(names);
-		} catch (InvalidDataException | InvalidResponseException e) {
+		} catch (InvalidResponseException e) {
 			e.printStackTrace();
 			return Response.status(500).entity(e.getMessage()).build();
 		} 
@@ -51,11 +62,20 @@ public class AssociationApis {
 	@Path("/reassociate/{ChairId}/{RoomId}")
 	@Consumes("APPLICATION/JSON")
 	public Response deleteResource(@PathParam("ChairId") String chair, @PathParam("RoomId") String room){		
+		
+		try{
+			validate.checkEmpty(room);
+			validate.checkEmpty(chair);
+		
+		}catch(InvalidDataException e){
+			return Response.status(500).entity(e.getMessage()).build();
+		}
+		
 		AssociationManager associationManager = new AssociationManager();
 		JSONObject response;
 		try {
 			response = associationManager.reassociate(room, chair);
-		} catch (InvalidDataException | InvalidResponseException e) {
+		} catch (InvalidResponseException e) {
 			e.printStackTrace();
 			return Response.status(500).entity(e.getMessage()).build();
 		}	
@@ -67,6 +87,14 @@ public class AssociationApis {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response newSchema(String json) throws CustomException{
+		
+		try{
+			validate.checkEmpty(json);				
+		}
+		catch(InvalidDataException e){
+			return Response.status(500).entity(e.getMessage()).build();
+		}
+		
 		AssociationManager associationManager = new AssociationManager();		
 		JSONObject response;
 		try {

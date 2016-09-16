@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.CustomException;
+import com.ibm.java.demo.exception.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.ChairManager;
@@ -25,16 +26,15 @@ import com.ibm.java.demo.service.ChairManager;
 @Path("/chairs")
 public class ChairApis {
 	
-	DatabaseQuery dbq = new DatabaseQuery();
-	
+	DataValidationCheck validate = new DataValidationCheck();
+	ChairManager chairManager = new ChairManager(new DatabaseQuery());
 	/*
 	 * Retreive chairs on page load to populate the dropdown menu
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getChairs(){
-		
-		ChairManager chairManager = new ChairManager();
+				
 		JSONObject response;
 		try {
 			response = chairManager.getChairNames();
@@ -53,14 +53,14 @@ public class ChairApis {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postChair(String chairName){	
 		
-		ChairManager chairManager = new ChairManager();
-		JSONObject response;
 		try {
-			response = chairManager.createChair(chairName);
-		} catch (InvalidDataException | InvalidResponseException e) {
-			e.printStackTrace();
-			return Response.status(500).entity(e.getMessage()).build();
-		} 
+			validate.checkEmpty(chairName);
+			validate.checkKeys(chairName, "Name");
+		} catch (InvalidDataException e1) {
+			return Response.status(500).entity(e1.getMessage()).build();
+		}
+				
+		JSONObject response = chairManager.createChair(chairName); 
 		return Response.status(response.getInt("status")).entity(response.toString()).build();
 	}
 	
@@ -70,8 +70,14 @@ public class ChairApis {
 	@DELETE
 	@Path("/{ChairId}")
 	@Consumes("APPLICATION/JSON")
-	public Response delete(@PathParam("ChairId") String chair){		
-		ChairManager chairManager = new ChairManager();
+	public Response delete(@PathParam("ChairId") String chair){
+		
+		try{
+			validate.checkEmpty(chair);
+		}catch (InvalidDataException e1) {
+			return Response.status(500).entity(e1.getMessage()).build();
+		}
+		
 		JSONObject response;
 		try {
 			response = chairManager.deleteChair(chair);

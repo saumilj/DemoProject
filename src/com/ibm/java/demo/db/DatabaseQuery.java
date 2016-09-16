@@ -1,6 +1,5 @@
 package com.ibm.java.demo.db;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -14,17 +13,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
-import javax.annotation.Resource;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.java.demo.entity.Chair;
+import com.ibm.java.demo.entity.Room;
+import com.ibm.java.demo.exception.ChairException;
 import com.ibm.java.demo.exception.CustomException;
+import com.ibm.java.demo.exception.RoomException;
 
 /*
  * Implement functions which create connection and execute queries
@@ -33,8 +33,14 @@ public class DatabaseQuery {
 
 	private InputStream inputStream;
 	private Properties sqlProperties;
+	public boolean Dev = false;
+	private Connection con = null;
+	private ResultSet rs = null;
+	private PreparedStatement preparedStatement = null;
+	private String propertiesFileName = "config.properties";
+	
 
-	public DatabaseQuery(){
+	public DatabaseQuery() {
 
 		sqlProperties = new Properties();
 		inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
@@ -45,11 +51,20 @@ public class DatabaseQuery {
 			} else {
 				throw new IOException("Input Stream is null"); // comment
 			}
+				if (Dev == true) {
+					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
+				} else {
+					con = ConnectionManager.getConnection();
+				}
+			
 		} catch (IOException e) {
 
 			e.printStackTrace();
 			// throw new CustomException("property file '" + propertiesFileName
 			// + "' not found in the classpath",e);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			try {
 				if (inputStream != null)
@@ -64,27 +79,24 @@ public class DatabaseQuery {
 	// Comment @Resource and change con = DBUtility.getConnection();
 	// @Resource(lookup = "jdbc/mysql")
 	// private DataSource dataSource;
-	private Connection con = null;
-	private ResultSet rs = null;
-	private PreparedStatement preparedStatement = null;
-	private String propertiesFileName = "config.properties";
-	public boolean Dev = false;
+	
+
 	/*
 	 * Implement query to create association between chair and room.
 	 */
 	public JSONObject associateChairToRoom(String room, String chair) throws CustomException {
 
-		try {
-			if(Dev==true){				
-				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject","root", "sumisam");
-			}else{			
-				con = DBUtility.getConnection();
-			}
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-			throw new CustomException("SQLException occured while creating connection");
-		}
+//		try {
+//			if (Dev == true) {
+//				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
+//			} else {
+//				con = ConnectionManager.getConnection();
+//			}
+//		} catch (SQLException e) {
+//
+//			e.printStackTrace();
+//			throw new CustomException("SQLException occured while creating connection");
+//		}
 
 		try {
 
@@ -152,10 +164,85 @@ public class DatabaseQuery {
 		}
 	}
 
-	public JSONObject createResource(String name, String attribute) throws CustomException {
+	public Chair createChair(Chair chair) throws CustomException, ChairException {
+
+		//Dependency Injection
+//		try {
+//			if (Dev == true) {
+//				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
+//			} else {
+//				con = ConnectionManager.getConnection();
+//			}
+//		} catch (SQLException e) {
+//
+//			e.printStackTrace();
+//			throw new CustomException("SQLException occured while creating connection");
+//		}
 
 		try {
-			con = DBUtility.getConnection();
+			String checkChair = sqlProperties.getProperty("checkChair");
+			preparedStatement = con.prepareStatement(checkChair);
+			preparedStatement.setString(1, chair.getChairName());
+			rs = preparedStatement.executeQuery();
+
+			/*
+			 * Check if the ChairId to be created already exists. If yes, return
+			 * appropriate message.
+			 */
+			if (rs.next()) {
+
+				throw new ChairException(chair.getChairName() + " already exists. Please give other name");
+			}
+
+			/*
+			 * If the requested ChairId does not already exist, create a new
+			 * entry in Database
+			 */
+			else {
+				String createChair = sqlProperties.getProperty("createChair");
+				preparedStatement = con.prepareStatement(createChair);
+				preparedStatement.setString(1, chair.getChairName());
+				preparedStatement.executeUpdate();
+			
+				chair.setChairId(UUID.randomUUID().toString());			
+				return chair;
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CustomException("SQLException occured while executing query");
+		} finally {
+
+			try {
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public Room createRoom(Room room) throws CustomException, RoomException {
+
+		try {
+			if (Dev == true) {
+				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
+			} else {
+				con = ConnectionManager.getConnection();
+			}
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -163,10 +250,10 @@ public class DatabaseQuery {
 		}
 
 		try {
-			String checkResource = MessageFormat.format((String) sqlProperties.get("checkResource"), attribute + "Id",
-					attribute, attribute + "Id");
-			preparedStatement = con.prepareStatement(checkResource);
-			preparedStatement.setString(1, name);
+			
+			String checkRoom = sqlProperties.getProperty("checkRoom");
+			preparedStatement = con.prepareStatement(checkRoom);
+			preparedStatement.setString(1, room.getRoomName());
 			rs = preparedStatement.executeQuery();
 
 			/*
@@ -176,11 +263,7 @@ public class DatabaseQuery {
 
 			if (rs.next()) {
 
-				JSONObject response = new JSONObject();
-				response.put("response",
-						attribute + " with name '" + name + "' already exists. Please give a different Name!");
-				response.put("status", 200); // check if 200 goes into success
-				return response;
+				throw new RoomException(room.getRoomName() + " already exists. Please give other name");
 			}
 
 			/*
@@ -188,20 +271,19 @@ public class DatabaseQuery {
 			 * entry in Database
 			 */
 			else {
-				String createResource = MessageFormat.format((String) sqlProperties.get("createResource"), attribute,
-						attribute + "Id");
-				preparedStatement = con.prepareStatement(createResource);
-				preparedStatement.setString(1, name);
+				String createRoom = sqlProperties.getProperty("createRoom");
+				preparedStatement = con.prepareStatement(createRoom);
+				preparedStatement.setString(1, room.getRoomName());
 				preparedStatement.executeUpdate();
-				/*
-				 * Chair 
-				 * 
-				 */
 
-				JSONObject response = new JSONObject();
-				response.put("response", attribute + " '" + name + "' inserted successfully");
-				response.put("status", 200);
-				return response;
+				int Id = returnLastId();
+				if (Id == -1) {
+					throw new CustomException("Last Inserted Id was not retrieved");
+				}
+				
+				room.setRoomId(UUID.randomUUID().toString());
+				return room;
+				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -233,14 +315,6 @@ public class DatabaseQuery {
 	public JSONObject getNames(String name) throws CustomException {
 
 		JSONObject jobj = new JSONObject();
-		try {
-			con = DBUtility.getConnection();
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-			throw new CustomException("SQLException occured while creating connection");
-		}
-
 		try {
 
 			/*
@@ -291,7 +365,7 @@ public class DatabaseQuery {
 	public JSONObject deleteAssociation(String chair) throws CustomException {
 
 		try {
-			con = DBUtility.getConnection();
+			con = ConnectionManager.getConnection();
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -342,7 +416,7 @@ public class DatabaseQuery {
 	public JSONObject getReport() throws CustomException {
 
 		try {
-			con = DBUtility.getConnection();
+			con = ConnectionManager.getConnection();
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -418,7 +492,7 @@ public class DatabaseQuery {
 	public JSONObject deleteChair(String chair) throws CustomException {
 		try {
 
-			con = DBUtility.getConnection();
+			con = ConnectionManager.getConnection();
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -466,10 +540,61 @@ public class DatabaseQuery {
 		}
 	}
 
+	public JSONObject deleteRoom(String room) throws CustomException {
+		try {
+
+			con = ConnectionManager.getConnection();
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new CustomException("SQLException occured while creating connection");
+		}
+
+		try {
+			/*
+			 * Delete the requested chair from Chair table
+			 */
+			String getNames = sqlProperties.getProperty("deleteRoom");
+			preparedStatement = con.prepareStatement(getNames);
+			preparedStatement.setString(1, room);
+			preparedStatement.executeUpdate();
+
+			JSONObject response = new JSONObject();
+			response.put("response", "Room was deleted successfully");
+			response.put("status", 200);
+			return response;
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new CustomException("SQLException occured while executing Delete query");
+		} finally {
+
+			try {
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public JSONObject changeArrangement(String json) throws CustomException {
 
 		try {
-			con = DBUtility.getConnection();
+			con = ConnectionManager.getConnection();
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -524,4 +649,59 @@ public class DatabaseQuery {
 			}
 		}
 	}
+
+	public int returnLastId() throws CustomException {
+
+//		try {
+//
+//			if (Dev == true) {
+//				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject", "root", "sumisam");
+//			} else {
+//				con = ConnectionManager.getConnection();
+//			}
+//
+//		} catch (SQLException e) {
+//
+//			e.printStackTrace();
+//			throw new CustomException("SQLException occured while creating connection");
+//		}
+
+		String lastId = sqlProperties.getProperty("lastId");
+		try {
+			preparedStatement = con.prepareStatement(lastId);
+			rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("LAST_INSERT_ID()");
+			}
+
+			return -1;
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new CustomException("Query to retreive last Id was not executed");
+		} finally {
+
+			try {
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (preparedStatement != null)
+					preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

@@ -1,55 +1,48 @@
 package com.ibm.java.test;
 
-import static org.junit.Assert.*;
+import javax.ws.rs.core.Response;
 
+import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 
-import com.ibm.java.demo.exception.InvalidDataException;
+import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.InvalidResponseException;
+import com.ibm.java.demo.rest.ChairApis;
 import com.ibm.java.demo.service.ChairManager;
 
+//Different class for apis
 public class ChairTests {
 	
-	//Negative tests for create chair method
+	DatabaseQuery dbq = new DatabaseQuery();
+
+    //postChair
 	@Test
-	public void testNullParam() throws InvalidResponseException{
+	public void testNullParam() throws InvalidResponseException {
 		
-		ChairManager cm = new ChairManager();
-		try{
-			cm.createChair(null);
-			fail("should throw exception");
-		}
-		catch(InvalidDataException e){
-			// should catch this exception
-		}	
+		ChairApis capis = new ChairApis();
+		Response jobj = capis.postChair(null);
+		Assert.assertEquals(jobj.getStatus(),500);
 	}
-	
+
+	//postChair
 	@Test
-	public void testEmptyParam() throws InvalidResponseException{
-		
-		ChairManager cm = new ChairManager();
-		try{
-			cm.createChair("");
-			fail("should throw exception");
-		}
-		catch(InvalidDataException e){
-			// should catch this exception
-		}	
+	public void testEmptyParam() throws InvalidResponseException {
+
+		ChairApis capis = new ChairApis();
+		Response jobj = capis.postChair("");
+		Assert.assertEquals(jobj.getStatus(),500);
 	}
-	
+
+	//postChair
 	@Test
-	public void missingNameKey() throws InvalidResponseException{
-		
-		ChairManager cm = new ChairManager();
-		try{
-			JSONObject j = new JSONObject();
-			j.put("test", "data");
-			cm.createChair(j.toString());
-			fail("should throw exception");
-		}
-		catch(InvalidDataException e){
-			// should catch this exception
-		}	
+	public void missingNameKey() {
+
+		JSONObject j = new JSONObject();
+		j.put("test", "data");
+		ChairApis capis = new ChairApis();
+		Response jobj = capis.postChair(j.toString());
+		Assert.assertEquals(jobj.getStatus(),500);
 	}
 }

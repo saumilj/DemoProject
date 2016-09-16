@@ -79,7 +79,7 @@ $(document).ready(function(){
 				location.reload();
 			},
 			error: function(data){
-				alert(data.response);
+				alert(data.responseText);
 			}
 		});	
     });
@@ -116,7 +116,7 @@ $(document).ready(function(){
 				alert(data.response);
 				location.reload();
 			},
-			error: function(data){
+			error: function(data){			
 				alert(data.responseText);
 			}
 		});	
@@ -208,6 +208,29 @@ $(document).ready(function(){
     	}
     	$.ajax({
 			url: url+"chairs/"+chairdropdown.value,
+			contentType: 'application/json',
+			dataType: 'json',
+			type: 'DELETE',				
+			success: function(data) {	
+				alert(data.response);
+				location.reload();
+				
+			},
+			error: function(data){
+				alert("here" + data.response);
+			}
+		});	
+    	
+    })
+    
+     $("#deleteRoom").click(function(event){
+    	
+    	if(chairdropdown.value=="Select Room"){
+    		alert("No room selected");
+    		return;
+    	}
+    	$.ajax({
+			url: url+"rooms/"+roomdropdown.value,
 			contentType: 'application/json',
 			dataType: 'json',
 			type: 'DELETE',				

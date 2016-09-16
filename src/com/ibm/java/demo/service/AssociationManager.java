@@ -18,20 +18,7 @@ public class AssociationManager {
 	 * Call function to execute queries to create association between chair and
 	 * room
 	 */
-	public JSONObject associate(String names) throws InvalidDataException, InvalidResponseException {
-	
-		try{
-			validate.checkEmpty(names);
-			validate.checkKeys(names, "Room");
-			validate.checkKeys(names, "Chair");			
-		
-		}catch(InvalidDataException e){
-			e.printStackTrace();
-			JSONObject errResponse = new JSONObject();
-			errResponse.put("response", e.getMessage());
-			errResponse.put("status", 500);
-			return errResponse;
-		}
+	public JSONObject associate(String names) throws InvalidResponseException {
 		
 		try {
 			JSONObject jobj = new JSONObject(names);
@@ -51,20 +38,9 @@ public class AssociationManager {
 	/*
 	 * Call function to execute queries to associate chair to a new room
 	 */
-	public JSONObject reassociate(String room, String chair) throws InvalidDataException, InvalidResponseException {
+	public JSONObject reassociate(String room, String chair) throws InvalidResponseException {
 
-			try{
-				validate.checkEmpty(room);
-				validate.checkEmpty(chair);
 			
-			}catch(InvalidDataException e){
-				e.printStackTrace();
-				JSONObject errResponse = new JSONObject();
-				errResponse.put("response", e.getMessage());
-				errResponse.put("status", 500);
-				return errResponse;
-			}
-		
 			try {
 			JSONObject responseStr = dbq.deleteAssociation(chair);
 			/*
@@ -92,7 +68,6 @@ public class AssociationManager {
 
 	public JSONObject changeAssociation(String json) throws InvalidDataException, InvalidResponseException {
 		
-		validate.checkEmpty(json);
 		JSONObject jobj = new JSONObject(json);
 		try {
 			if (jobj.has("pool")) {
