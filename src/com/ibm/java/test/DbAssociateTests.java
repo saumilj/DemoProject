@@ -13,7 +13,7 @@ public class DbAssociateTests {
 	
 	@Test	
 	public void checkStringParam() throws CustomException{
-		dbq.Dev = true;	
+		dbq.dev = 2;	
 		JSONObject jobj = dbq.associateChairToRoom("roomdbtest", "chairdbtest");
 		Assert.assertThat(jobj.toString(), CoreMatchers.containsString("Association exists"));		
 	}	

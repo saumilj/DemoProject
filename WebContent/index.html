@@ -16,8 +16,13 @@
 <script src="//1.www.s81c.com/common/v18/js/tables.js"></script>
 <script
 	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript"
 	src="http://code.jquery.com/jquery-latest.js"></script>
+<link rel="stylesheet" type="text/css" href="css/alertify.min.css">
+<script type="text/javascript"
+	src="js/alertify.min.js"></script>
+		
 
 <meta name="geo.country" content="US" />
 <meta name="dcterms.rights" content="© Copyright IBM Corp. 2016" />
@@ -135,18 +140,20 @@
 						<div class="parentStructure">
 						<div class=structure>
 							<label class="title ibm-h4 ibm-light ibm-textcolor-blue-50">
-								Room</label> <select id="Roomdropdown">
+								<p id="proom">Room</p></label><select id="Roomdropdown">
 								<option selected="selected">Select Room</option>
 								<option>[CREATE ROOM]</option>
-							</select> <label class="title ibm-h4 ibm-light ibm-textcolor-blue-50">
-								Chair&nbsp; </label><select id="Chairdropdown">
+							</select>
+							 <label class="title ibm-h4 ibm-light ibm-textcolor-blue-50">
+								<p id="pchair">Chair</p></label><select id="Chairdropdown">
 								<option selected="selected">Select Chair</option>
 								<option>[CREATE CHAIR]</option>
-							</select> <br> <br> <br>
-
+							</select>
+							<br><br><br>
+							
 							<p>
 								<button type="button" id="deleteChair"
-									class="ibm-btn-pri ibm-btn-blue-50">Delete Chair&nbsp;</button>
+									class="ibm-btn-pri ibm-btn-blue-50">Delete Chair</button>
 								<button type="button" id="associate"
 									class="ibm-btn-pri ibm-btn-blue-50">Create Allocation
 								</button>
@@ -154,7 +161,6 @@
 									class="ibm-btn-pri ibm-btn-blue-50">Delete Room</button>
 								<button type="button" id="report"
 									class="ibm-btn-pri ibm-btn-blue-50">Generate Report</button>
-
 								<button type="button" id="showArrangement"
 									class="ibm-btn-pri ibm-btn-blue-50">Show Arrangement</button>
 
@@ -247,5 +253,7 @@
 		<!-- FOOTER_END -->
 	</div>
 	<script type="text/javascript" src=js/index.js></script>
+	
+	
 </body>
 </html>

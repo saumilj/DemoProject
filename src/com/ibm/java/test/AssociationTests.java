@@ -4,15 +4,14 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 import org.junit.Test;
-import com.ibm.java.demo.exception.InvalidDataException;
-import com.ibm.java.demo.exception.InvalidResponseException;
+
 import com.ibm.java.demo.rest.AssociationApis;
 
 public class AssociationTests {
 
 	//associate apis
 	@Test
-	public void testEmptyParam() throws InvalidResponseException, InvalidDataException {
+	public void testEmptyParam() {
 		AssociationApis aapis = new AssociationApis();
 		Response response = aapis.postAssociate("");
 		Assert.assertEquals(response.getStatus(),500 );
@@ -20,7 +19,7 @@ public class AssociationTests {
 
 	//association apis
 	@Test
-	public void testNullParam() throws InvalidDataException, InvalidResponseException {
+	public void testNullParam() {
 
 		AssociationApis aapis = new AssociationApis();
 		Response response = aapis.postAssociate(null);

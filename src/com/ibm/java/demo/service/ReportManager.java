@@ -8,7 +8,12 @@ import com.ibm.java.demo.exception.InvalidResponseException;
 
 public class ReportManager {
 
-	DatabaseQuery dbq = new DatabaseQuery();
+	private DatabaseQuery dbq;
+	
+	public ReportManager(DatabaseQuery dbq){
+		 
+		 this.dbq = dbq;		
+	}
 	
 	/*
 	 * Call function to execute query to get all room-chair associations and return as a JSONObject to apis

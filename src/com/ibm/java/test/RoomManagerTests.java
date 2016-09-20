@@ -1,7 +1,5 @@
 package com.ibm.java.test;
 
-import static org.junit.Assert.fail;
-
 import javax.ws.rs.core.Response;
 
 import org.hamcrest.CoreMatchers;
@@ -12,10 +10,9 @@ import org.junit.Test;
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.rest.RoomApis;
-import com.ibm.java.demo.service.ChairManager;
 import com.ibm.java.demo.service.RoomManager;
 
-public class RoomTests {
+public class RoomManagerTests {
 	
 	// Negative Test create Room Method
 	DatabaseQuery dbq = new DatabaseQuery();
@@ -55,9 +52,9 @@ public class RoomTests {
 		
 		RoomManager cm = new RoomManager(dbq);
 		JSONObject j = new JSONObject();
-		j.put("Name", "RoomUnit"+System.currentTimeMillis()/10000);
+		j.put("Name", "RoomUnit"+System.currentTimeMillis()/1000);
 		JSONObject jobj = cm.createRoom(j.toString());
-		Assert.assertTrue(jobj.getInt("Id")>-1);
+		Assert.assertThat(jobj.toString(), CoreMatchers.containsString("Room inserted successfully"));
 	}
 	
 	//createRoom

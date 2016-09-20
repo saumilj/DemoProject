@@ -16,7 +16,7 @@ import com.ibm.java.demo.service.ReportManager;
 @Path("/report")
 public class ReportApis {
 	
-DatabaseQuery dbq = new DatabaseQuery();
+	ReportManager reportManager = new ReportManager(new DatabaseQuery());
 	
 	/*
 	 * Generate a report showing what room has which chairs
@@ -24,7 +24,6 @@ DatabaseQuery dbq = new DatabaseQuery();
 	@GET	
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getReport() throws JsonProcessingException{
-		ReportManager reportManager = new ReportManager();
 		JSONObject response;
 		try {
 			response = reportManager.generateReport();

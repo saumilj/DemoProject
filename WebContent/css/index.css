@@ -16,6 +16,26 @@
     margin-bottom: 10px;
 }
 
+#proom {
+	display:inline-block;
+	
+}
+
+#pchair {
+	display:inline-block;
+	margin-left: 20px;
+}
+
+.title {
+	
+	display:inline-block;
+	margin-right: 10px;
+	
+}
+#submitChange {
+	
+	display: none;
+}
 .structure2 {
 	
 padding-left: 120px;
@@ -24,7 +44,8 @@ padding-left: 120px;
 .dragme {
 	
 	border: 0.5px solid #4178BE;
-	background-color: white;
+	background-color: grey;
+	color: white;
 }
 
 table {

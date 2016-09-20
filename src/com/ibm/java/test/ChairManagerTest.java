@@ -1,5 +1,6 @@
 package com.ibm.java.test;
 
+import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,8 +32,10 @@ public class ChairManagerTest {
 			JSONObject j = new JSONObject();
 			j.put("Name", "ChairUnit");
 			JSONObject jobj = cm.createChair(j.toString());
+			Assert.assertThat(jobj.toString(), CoreMatchers.containsString("exists"));
 		}
-
+		
+		
 		//getChairNames
 		@Test
 		public void getChairs() throws InvalidResponseException {

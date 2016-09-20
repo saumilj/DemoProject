@@ -10,7 +10,11 @@ import com.ibm.java.demo.exception.InvalidResponseException;
 
 public class AssociationManager {
 
-	DatabaseQuery dbq = new DatabaseQuery();
+	private DatabaseQuery dbq;
+	public AssociationManager(DatabaseQuery dbq){
+		 
+		 this.dbq = dbq;		
+	}
 		/*
 	 * Call function to execute queries to create association between chair and
 	 * room
@@ -70,6 +74,7 @@ public class AssociationManager {
 		
 		JSONObject jobj = new JSONObject(json);
 		try {
+			// If there are some chairs in pool, delete their associations first
 			if (jobj.has("pool")) {
 
 				try {
@@ -92,7 +97,7 @@ public class AssociationManager {
 					return response;
 				}
 			}
-			
+			// Change Room-Chair association
 			JSONObject response = dbq.changeArrangement(jobj.toString());
 			if(!response.has("response") || !response.has("status")){
 				throw new InvalidResponseException("Illegal response from server while changing arrangement");

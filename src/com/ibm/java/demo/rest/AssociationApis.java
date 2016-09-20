@@ -16,12 +16,13 @@ import com.ibm.java.demo.exception.CustomException;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.AssociationManager;
+import com.ibm.java.demo.service.ReportManager;
 import com.ibm.java.demo.validation.DataValidationCheck;
 
 @Path("/associate")
 public class AssociationApis {
 	
-	DatabaseQuery dbq = new DatabaseQuery();
+	AssociationManager associationManager = new AssociationManager(new DatabaseQuery());
 	DataValidationCheck validate = new DataValidationCheck();
 	/*
 	 * Create an association of a chair to a room
@@ -30,7 +31,6 @@ public class AssociationApis {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postAssociate(String names){
-		AssociationManager associationManager = new AssociationManager();		
 		JSONObject response;
 		try{
 			validate.checkEmpty(names);
@@ -68,7 +68,6 @@ public class AssociationApis {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 		
-		AssociationManager associationManager = new AssociationManager();
 		JSONObject response;
 		try {
 			response = associationManager.reassociate(room, chair);
@@ -92,7 +91,6 @@ public class AssociationApis {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 		
-		AssociationManager associationManager = new AssociationManager();		
 		JSONObject response;
 		try {
 			response = associationManager.changeAssociation(json);

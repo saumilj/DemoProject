@@ -1,7 +1,8 @@
 // Waits for DOM to load up
 
-//var url = "http://chairallocation.mybluemix.net/DemoWebApp/rest/service/"	
+//var url = "http://chairallocation.mybluemix.net/DemoWebApp/rest/"	
 var url = "http://localhost:9080/DemoWebApp/rest/"
+//var url = "http://saumilsqlapp.mybluemix.net/DemoWebApp/rest/"
 	
 	
 	var mainObj = {};
@@ -20,6 +21,10 @@ $(document).ready(function(){
   //Populate DropDown Menus on load
 	roomMenu();
 	chairMenu();
+	
+	$("select").each(function(){
+		IBMCore.common.widget.selectlist.init(this);
+		});  
     
     function roomMenu(){    	
     	$.getJSON(url+"rooms", roomresults)  	
@@ -54,17 +59,17 @@ $(document).ready(function(){
     	
 		var chair = document.getElementById("chair").value;
 		if (!chair.replace(/\s/g, '').length){		
-			alert("No Name given to the chair you want to create. Please specify a name for the chair!")
+			alertify.alert("No Name given to the chair you want to create. Please specify a name for the chair!")
 			return;
 		}
 		if (!chair.replace(/\s/g, '').length){		
-			alert("No Name given to the chair you want to create. Please specify a name for the chair!")
+			alertify.alert("No Name given to the chair you want to create. Please specify a name for the chair!")
 			return;
 		}
 		
 		var regex = new RegExp("^[a-zA-Z0-9]+$");
 		if (!regex.test(chair)) {
-			alert("Use only alphanumerics characters in name!");
+			alertify.alert("Use only alphanumerics characters in name!");
 			return;
 	    }
 		var data = "{\"Name\" : \""+chair+"\"}";
@@ -75,11 +80,12 @@ $(document).ready(function(){
 			dataType: 'json',
 			type: 'POST',			
 			success: function(data) {
-				alert(data.response);
-				location.reload();
+				alertify.alert(data.response);
+				var option = $('<option />').val(chair).text(chair);			
+				$("#Chairdropdown").append(option);
 			},
 			error: function(data){
-				alert(data.responseText);
+				alertify.alert(data.responseText);
 			}
 		});	
     });
@@ -91,17 +97,17 @@ $(document).ready(function(){
     	
 		var room = document.getElementById("room").value;
 		if (!room.replace(/\s/g, '').length){		
-			alert("No Name given to the room you want to create. Please specify a name for the room!")
+			alertify.alert("No Name given to the room you want to create. Please specify a name for the room!")
 			return;
 		}
 		if (!room.replace(/\s/g, '').length){		
-			alert("No Name given to the room you want to create. Please specify a name for the room!")
+			alertify.alert("No Name given to the room you want to create. Please specify a name for the room!")
 			return;
 		}
 		
 		var regex = new RegExp("^[a-zA-Z0-9]+$");
 		if (!regex.test(room)) {
-			alert("Use only alphanumerics characters in name!");
+			alertify.alert("Use only alphanumerics characters in name!");
 			return;
 	    }
 		
@@ -113,11 +119,12 @@ $(document).ready(function(){
 			dataType: 'json',
 			type: 'POST',			
 			success: function(data) {
-				alert(data.response);
-				location.reload();
+				alertify.alert(data.response);
+				var option = $('<option />').val(room).text(room);			
+				$("#Roomdropdown").append(option);
 			},
 			error: function(data){			
-				alert(data.responseText);
+				alertify.alert(data.responseText);
 			}
 		});	
     });
@@ -126,12 +133,12 @@ $(document).ready(function(){
     $("#associate").click(function(event){
 		
     	if (roomdropdown.value == "Select Room"){	
-			alert("Room Name missing!");
+			alertify.alert("Room Name missing!");
 			return;
 		}
     	
 		if (chairdropdown.value=="Select Chair"){	
-			alert("Chair name missing!");
+			alertify.alert("Chair name missing!");
 			return;
 		}
 		 	
@@ -145,10 +152,10 @@ $(document).ready(function(){
 			success: function(data) {
 				
 				associateSuccessResponse(data);
-				//alert(data.response); 
+				//alertify.alert(data.response); 
 			},
 			error: function(data){
-				alert(data.responseText);
+				alertify.alert(data.responseText);
 			}
 		});	
 	})
@@ -164,7 +171,7 @@ $(document).ready(function(){
             }
     	}
     	else{  		
-    		alert(data.response); 
+    		alertify.alert(data.response); 
     	}
     }
 	
@@ -172,12 +179,12 @@ $(document).ready(function(){
 	function reallocate(){	
 		
     	if (roomdropdown.value == "Select Room"){	
-			alert("Room Name missing!");
+			alertify.alert("Room Name missing!");
 			return;
 		}
     	
 		if (chairdropdown.value=="Select Chair"){	
-			alert("Chair name missing!");
+			alertify.alert("Chair name missing!");
 			return;
 		}
 
@@ -187,10 +194,10 @@ $(document).ready(function(){
 			dataType: 'json',
 			type: 'DELETE',				
 			success: function(data) {	
-				alert(data.response);
+				alertify.alert(data.response);
 			},
 			error: function(data){
-				alert(data.response);
+				alertify.alert(data.response);
 			}
 		});	
 	}
@@ -202,8 +209,9 @@ $(document).ready(function(){
     
     $("#deleteChair").click(function(event){
     	
-    	if(chairdropdown.value=="Select Chair"){
-    		alert("No chair selected");
+    	var chairdrop = document.getElementById("Chairdropdown");
+    	if(chairdropdown.selectedIndex==0 || chairdropdown.selectedIndex==0){
+    		alertify.alert("No chair selected");
     		return;
     	}
     	$.ajax({
@@ -212,12 +220,13 @@ $(document).ready(function(){
 			dataType: 'json',
 			type: 'DELETE',				
 			success: function(data) {	
-				alert(data.response);
-				location.reload();
+				alertify.alert(data.response);
+				var x = document.getElementById("Chairdropdown");
+				x.remove(x.selectedIndex);
 				
 			},
 			error: function(data){
-				alert("here" + data.response);
+				alertify.alert("here" + data.response);
 			}
 		});	
     	
@@ -225,8 +234,9 @@ $(document).ready(function(){
     
      $("#deleteRoom").click(function(event){
     	
-    	if(chairdropdown.value=="Select Room"){
-    		alert("No room selected");
+    	 var roomdrop = document.getElementById("Roomdropdown");
+    	if(roomdrop.selectedIndex==0 || roomdrop.selectedIndex==1){
+    		alertify.alert("No room selected");
     		return;
     	}
     	$.ajax({
@@ -235,12 +245,13 @@ $(document).ready(function(){
 			dataType: 'json',
 			type: 'DELETE',				
 			success: function(data) {	
-				alert(data.response);
-				location.reload();
+				alertify.alert(data.response);
+				var x = document.getElementById("Roomdropdown");
+				x.remove(x.selectedIndex);
 				
 			},
 			error: function(data){
-				alert("here" + data.response);
+				alertify.alert("here" + data.response);
 			}
 		});	
     	
@@ -366,11 +377,11 @@ $(document).ready(function(){
 			dataType: 'json',
 			type: 'POST',				
 			success: function(data) {			
-				alert(data.response)
-				//alert(data.response); 
+				alertify.alert(data.response)
+				//alertify.alert(data.response); 
 			},
 			error: function(data){
-				alert(data.responseText);
+				alertify.alert(data.responseText);
 			}
 		});	
     	
@@ -387,19 +398,22 @@ $(document).ready(function(){
     }
       
     //Populate appropriate textbox when an option from dropdown is selected
-    chairdropdown.onchange = function(){
+    chairdropdown.onchange = function(event){
     	
     	if(this.value == "[CREATE CHAIR]"){
     		$("#chairform").show(100);
-    		chairdropdown.value = "Select Chair";	
+    		var x = document.getElementById("Chairdropdown");
+    		x.selectedIndex=0;
     	}
     }
     
-    roomdropdown.onchange = function(){
+    roomdropdown.onchange = function(event){
     	
     	if(this.value == "[CREATE ROOM]"){
     		$("#roomform").show(100);
-    		roomdropdown.value = "Select Room"; // change
+    		event.preventDefault(); 
+    		var x = document.getElementById("Roomdropdown");
+    		x.selectedIndex=0;
     	}    		
     }
 })

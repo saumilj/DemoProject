@@ -7,32 +7,31 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.java.demo.db.DatabaseQuery;
-import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.rest.RoomApis;
 
-public class RoomApistest {
+public class RoomApisTest {
 	
 	DatabaseQuery dbq = new DatabaseQuery();
 
-    //postRoom
+    
 	@Test
-	public void testNullParam() throws InvalidResponseException {
+	public void testNullParam() {
 		
 		RoomApis capis = new RoomApis();
 		Response jobj = capis.postRoom(null);
 		Assert.assertEquals(jobj.getStatus(),500);
 	}
 
-	//postRoom
+	
 	@Test
-	public void testEmptyParam() throws InvalidResponseException {
+	public void testEmptyParam() {
 
 		RoomApis capis = new RoomApis();
 		Response jobj = capis.postRoom("");
 		Assert.assertEquals(jobj.getStatus(),500);
 	}
 
-	//postRoom
+	
 	@Test
 	public void missingNameKey() {
 

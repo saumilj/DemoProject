@@ -1,17 +1,14 @@
 package com.ibm.java.demo.service;
 
-import javax.ws.rs.core.Response;
-
 import org.json.JSONObject;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.entity.Room;
-import com.ibm.java.demo.exception.RoomException;
 import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.validation.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.exception.RoomException;
+import com.ibm.java.demo.validation.DataValidationCheck;
 
 public class RoomManager {
 	
@@ -35,7 +32,7 @@ DataValidationCheck validate = new DataValidationCheck();
 			room = dbq.createRoom(room);
 			
 			JSONObject response = new JSONObject();
-			response.put("response","Room inserted successfully successfully.");
+			response.put("response","Room inserted successfully.");
 			response.put("status", 200);
 			response.put("Id", room.getRoomId());		
 			
