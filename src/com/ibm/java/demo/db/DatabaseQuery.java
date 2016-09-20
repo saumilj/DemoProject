@@ -703,22 +703,4 @@ public class DatabaseQuery {
 			}
 		}
 	}
-
 }
-
-// Test
-// try{
-// if (dev == true) {
-// //Used for testing purpose
-// //con =
-// DriverManager.getConnection("jdbc:mysql://localhost:3306/TestDemoProject",
-// "root", "sumisam");
-// con =
-// DriverManager.getConnection("jdbc:mysql://192.155.247.250:3307/de5d033ef3e7c413590052860e7e34975","u7IUAqqnXBGWE",
-// "pfuZDUgBQ0GAk");
-// } else {
-// con = ConnectionManager.getConnection();
-// }
-// }catch(SQLException e){
-// e.printStackTrace();
-// }

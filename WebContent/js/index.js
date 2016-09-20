@@ -1,8 +1,8 @@
 // Waits for DOM to load up
 
 //var url = "http://chairallocation.mybluemix.net/DemoWebApp/rest/"	
-var url = "http://localhost:9080/DemoWebApp/rest/"
-//var url = "http://saumilsqlapp.mybluemix.net/DemoWebApp/rest/"
+//var url = "http://localhost:9080/DemoWebApp/rest/"
+var url = "http://saumilsqlapp.mybluemix.net/DemoWebApp/rest/"
 	
 	
 	var mainObj = {};
