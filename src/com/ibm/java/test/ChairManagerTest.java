@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.java.demo.db.DatabaseQuery;
+import com.ibm.java.demo.exception.ChairException;
+import com.ibm.java.demo.exception.CustomException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.ChairManager;
 
@@ -15,7 +17,7 @@ public class ChairManagerTest {
 	
 	//createChair
 		@Test
-		public void newChairInsertResponse() {
+		public void newChairInsertResponse() throws ChairException, CustomException {
 			
 			ChairManager cm = new ChairManager(dbq);
 			JSONObject j = new JSONObject();
@@ -26,7 +28,7 @@ public class ChairManagerTest {
 		
 		//createChair
 		@Test
-		public void existingChairInsertResponse() {
+		public void existingChairInsertResponse() throws ChairException, CustomException {
 			
 			ChairManager cm = new ChairManager(dbq);
 			JSONObject j = new JSONObject();
@@ -38,7 +40,7 @@ public class ChairManagerTest {
 		
 		//getChairNames
 		@Test
-		public void getChairs() throws InvalidResponseException {
+		public void getChairs() throws InvalidResponseException, CustomException {
 				
 			ChairManager cm = new ChairManager(dbq);
 			JSONObject jobj = cm.getChairNames();

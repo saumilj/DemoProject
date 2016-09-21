@@ -16,6 +16,12 @@ public class ChairException extends Exception{
 		super(message);
 
 	}
+	
+	public ChairException(String message, int code) {
+
+		super(message);
+
+	}
 
 	public ChairException(String message, Throwable cause) {
 

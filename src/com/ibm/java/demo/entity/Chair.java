@@ -1,7 +1,13 @@
 package com.ibm.java.demo.entity;
 
-public class Chair {
+import java.io.Serializable;
 
+public class Chair implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String chairName;
 	private String Id;
 	

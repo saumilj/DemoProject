@@ -7,24 +7,26 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class ConnectionManager {
-	
-private static DataSource dataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	/*
-	 * static block is used here for initialization. 
-	 * The code inside it will run when JVM loads the class, so we can have our instance ready.
-	 */
+public class ConnectionManager {
+
+	private static DataSource dataSource;
+	private final static Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+
 	static {
 		try {
 			dataSource = (DataSource) new InitialContext().lookup("jdbc/mySQL");
-		} catch (NamingException e) { 
+			//logger.warn("***Datasource instance created");
+		} catch (NamingException e) {
 			e.printStackTrace();
+			logger.error("Naming Exception occured, failed to lookup jdbc/mySQL");
 		}
 	}
 
 	public static Connection getConnection() throws SQLException {
-		
+
 		return dataSource.getConnection();
 	}
 }

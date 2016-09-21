@@ -9,11 +9,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.json.JSONObject;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.validation.DataValidationCheck;
+import com.ibm.java.demo.exception.ChairException;
+import com.ibm.java.demo.exception.CustomException;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.ChairManager;
@@ -28,16 +31,15 @@ public class ChairApis {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getChairs(){
+	public Response getChairs() {
 				
 		JSONObject response;
 		try {
 			response = chairManager.getChairNames();
-		} catch (InvalidResponseException e) {
-			e.printStackTrace();
+		} catch (CustomException e) {
 			return Response.status(500).entity(e.getMessage()).build();
-		}
-		return Response.status(response.getInt("status")).entity(response.toString()).build();
+		}	
+		return Response.status(Status.ACCEPTED).entity(response.toString()).build();
 	}
 	
 	/*
@@ -55,8 +57,17 @@ public class ChairApis {
 			return Response.status(500).entity(e1.getMessage()).build();
 		}
 				
-		JSONObject response = chairManager.createChair(chairName); 
-		return Response.status(response.getInt("status")).entity(response.toString()).build();
+		JSONObject response;
+		try {
+			response = chairManager.createChair(chairName);
+		} catch (ChairException e) {
+			
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		} catch (CustomException e){
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+		return Response.ok().entity(response.toString()).build();
 	}
 	
 	/*

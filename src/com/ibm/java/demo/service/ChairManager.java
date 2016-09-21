@@ -1,16 +1,19 @@
 package com.ibm.java.demo.service;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.entity.Chair;
 import com.ibm.java.demo.exception.ChairException;
 import com.ibm.java.demo.exception.CustomException;
-import com.ibm.java.demo.validation.DataValidationCheck;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 
 public class ChairManager {
 
+	private final static Logger logger = LoggerFactory.getLogger(ChairManager.class);
 	private DatabaseQuery dbq;
 	
 	public ChairManager(DatabaseQuery dbq){
@@ -18,59 +21,33 @@ public class ChairManager {
 		 this.dbq = dbq;		
 	}
 	
-	DataValidationCheck validate = new DataValidationCheck();	
-	
 	/*
 	 * Call function to execute query to create new Chair
 	 */
-	public JSONObject createChair(String chairName){
-		
-		try{
-			
+	public JSONObject createChair(String chairName) throws ChairException, CustomException{
+				
 			JSONObject jobj = new JSONObject(chairName);
 			Chair chair = new Chair(jobj.getString("Name"));
 			chair = dbq.createChair(chair);
 			
 			//formulate a response object
 			JSONObject response = new JSONObject();
-			response.put("status", 200);
-			response.put("response","Chair inserted successfully.");
+			//response.put("status", 200);
+			//response.put("response","Chair inserted successfully.");
 			response.put("Id", chair.getChairId());	
 			
 			return response;
-			
-		}catch (CustomException e){
-			
-			JSONObject errResponse = new JSONObject();
-			errResponse.put("response", e.getMessage());
-			errResponse.put("status", 500);
-			return errResponse;
-		}catch (ChairException e){
-			
-			JSONObject errResponse = new JSONObject();
-			errResponse.put("response", e.getMessage());
-			errResponse.put("status", 500);
-			return errResponse;
-		}
+				
 	}	
 	/*
 	 * Call function to execute queries to get all ChairIds from the database
 	 */
 	
-	public JSONObject getChairNames() throws InvalidResponseException{
+	public JSONObject getChairNames() throws CustomException {
 				
-		try {
-			JSONObject response = dbq.getNames("Chair");
-			if(!response.has("status")){
-				throw new InvalidResponseException("Illegal response from server while getting chairs");
-			}
+			//logger.info("**get names of chairs");
+			JSONObject response = dbq.getChairs();
 			return response;
-		} catch (CustomException e) {
-			JSONObject errResponse = new JSONObject();
-			errResponse.put("response", e.getMessage());
-			errResponse.put("status", 500);
-			return errResponse;		
-		}
 	}
 	/*
 	 * Delete the chair safely from database
@@ -86,6 +63,7 @@ public class ChairManager {
 				if(!responseStr.has("response") || !responseStr.has("status")){
 					throw new InvalidResponseException("Illegal response from server while deleting chair");
 				}
+				logger.info(responseStr.toString());
 				return responseStr;
 			}
 			else{

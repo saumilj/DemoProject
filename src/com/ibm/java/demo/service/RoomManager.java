@@ -1,6 +1,8 @@
 package com.ibm.java.demo.service;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ibm.java.demo.db.DatabaseQuery;
 import com.ibm.java.demo.entity.Room;
@@ -14,6 +16,7 @@ public class RoomManager {
 	
 DataValidationCheck validate = new DataValidationCheck();
 	
+	private final static Logger logger = LoggerFactory.getLogger(RoomManager.class);
 	private DatabaseQuery dbq;
 
 	public RoomManager(DatabaseQuery dbq){
@@ -24,58 +27,26 @@ DataValidationCheck validate = new DataValidationCheck();
 	 * Call function to execute query to create new Room
 	 */
 	
-	public JSONObject createRoom(String roomName){
+	public JSONObject createRoom(String roomName) throws CustomException, RoomException{
 		
-		try{
+	
 			JSONObject jobj = new JSONObject(roomName);
 			Room room = new Room(jobj.getString("Name"));
 			room = dbq.createRoom(room);
 			
 			JSONObject response = new JSONObject();
-			response.put("response","Room inserted successfully.");
-			response.put("status", 200);
 			response.put("Id", room.getRoomId());		
 			
 			return response;
-			
-		}catch (RoomException e){
-			
-			//formulate a response object
-			JSONObject errResponse = new JSONObject();
-			errResponse.put("response", "Room already exists");
-			errResponse.put("status", 500);
-			
-			return errResponse;
-		}
-		catch (CustomException e){
-			
-			//formulate a response object
-			JSONObject errResponse = new JSONObject();
-			errResponse.put("response", e.getMessage());
-			errResponse.put("status", 500);
-			
-			return errResponse;
-		}
 	}
 	
 	/*
 	 * Call function to execute queries to get all RoomIds from the database
 	 */
-	public JSONObject getRoomNames() throws InvalidResponseException{
+	public JSONObject getRoomNames() throws CustomException{
 		
-		try {
-			JSONObject response = dbq.getNames("Room");
-			if(!response.has("status")){
-				throw new InvalidResponseException("Illegal response from server while getting room names");
-			}
-			return response;
-		} catch (CustomException e) {
-			JSONObject errResponse = new JSONObject();
-			errResponse.put("response", e.getMessage());
-			errResponse.put("status", 500);
-			return errResponse;
-		}
-		
+			JSONObject response = dbq.getRooms();
+			return response;	
 	}
 	
 	public JSONObject deleteRoom(String roomName) throws InvalidDataException, InvalidResponseException{

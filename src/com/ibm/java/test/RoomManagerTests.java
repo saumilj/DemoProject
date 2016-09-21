@@ -8,7 +8,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.java.demo.db.DatabaseQuery;
+import com.ibm.java.demo.exception.CustomException;
 import com.ibm.java.demo.exception.InvalidResponseException;
+import com.ibm.java.demo.exception.RoomException;
 import com.ibm.java.demo.rest.RoomApis;
 import com.ibm.java.demo.service.RoomManager;
 
@@ -48,7 +50,7 @@ public class RoomManagerTests {
 
 	//createRoom
 	@Test
-	public void newRoomInsertResponse() {
+	public void newRoomInsertResponse() throws CustomException, RoomException {
 		
 		RoomManager cm = new RoomManager(dbq);
 		JSONObject j = new JSONObject();
@@ -59,7 +61,7 @@ public class RoomManagerTests {
 	
 	//createRoom
 	@Test
-	public void existingRoomInsertResponse() {
+	public void existingRoomInsertResponse() throws CustomException, RoomException {
 		
 		RoomManager cm = new RoomManager(dbq);
 		JSONObject j = new JSONObject();
@@ -70,7 +72,7 @@ public class RoomManagerTests {
 	
 	//getRoomNames
 	@Test
-	public void getRooms() throws InvalidResponseException {
+	public void getRooms() throws CustomException {
 			
 		RoomManager cm = new RoomManager(dbq);
 		JSONObject jobj = cm.getRoomNames();

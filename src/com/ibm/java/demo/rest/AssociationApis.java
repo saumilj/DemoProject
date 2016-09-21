@@ -16,7 +16,6 @@ import com.ibm.java.demo.exception.CustomException;
 import com.ibm.java.demo.exception.InvalidDataException;
 import com.ibm.java.demo.exception.InvalidResponseException;
 import com.ibm.java.demo.service.AssociationManager;
-import com.ibm.java.demo.service.ReportManager;
 import com.ibm.java.demo.validation.DataValidationCheck;
 
 @Path("/associate")

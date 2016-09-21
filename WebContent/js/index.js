@@ -1,12 +1,13 @@
 // Waits for DOM to load up
 
 //var url = "http://chairallocation.mybluemix.net/DemoWebApp/rest/"	
-//var url = "http://localhost:9080/DemoWebApp/rest/"
-var url = "http://saumilsqlapp.mybluemix.net/DemoWebApp/rest/"
+var url = "http://localhost:9080/DemoWebApp/rest/"
+//var url = "http://saumilsqlapp.mybluemix.net/DemoWebApp/rest/"
 	
 	
 	var mainObj = {};
 	mainObj.roomMenu =  function(){	
+	
 	}
 
 $(document).ready(function(){
@@ -80,13 +81,14 @@ $(document).ready(function(){
 			dataType: 'json',
 			type: 'POST',			
 			success: function(data) {
-				alertify.alert(data.response);
+				alertify.alert("Chair inserted successfully");
 				var option = $('<option />').val(chair).text(chair);			
 				$("#Chairdropdown").append(option);
 			},
 			error: function(data){
 				alertify.alert(data.responseText);
 			}
+			
 		});	
     });
 	  
@@ -117,12 +119,14 @@ $(document).ready(function(){
 			data: data,
 			contentType: 'application/json',
 			dataType: 'json',
-			type: 'POST',			
+			type: 'POST',	
 			success: function(data) {
-				alertify.alert(data.response);
+				alertify.alert("Room inserted successfully");
 				var option = $('<option />').val(room).text(room);			
 				$("#Roomdropdown").append(option);
-			},
+			}
+			,
+			
 			error: function(data){			
 				alertify.alert(data.responseText);
 			}
@@ -288,7 +292,7 @@ $(document).ready(function(){
     })
     
     function roomDisplay(data){
-    	var deffered =$.deffered;
+    	
     	console.log("roomData");
     	$('<div id= "pool" ondrop="drop(event)" ondragover="allowDrop(event)" class="room ibm-col-4-1 ibm-background-neutral-white-20"><center><p>Unallocated Chairs</p></center></div>').appendTo(".room-section");
 		$.each(data, function(i,field){
@@ -296,14 +300,15 @@ $(document).ready(function(){
 				//Creates Room Displays
     			$('<div id='+field+' ondrop="drop(event)" ondragover="allowDrop(event)" class="room ibm-col-4-1 ibm-background-neutral-white-20"><center><p>'+field+'</p></center></div>').appendTo(".room-section");
     		 }
-		});	
+		});
+		
 		getArrangement();	
     }	
     
     function chairDisplay(data){        
 		$.each(data, function(i,field){ 
 			//check if chair has already been allocated. If yes, then don not populate pool.
-			if(field!=200 && $.inArray(field, allocatedChairs)==-1){
+			if( field!=200 && $.inArray(field, allocatedChairs)==-1){
 				$('<button class="dragme" draggable="true" id='+field+' ondragstart="drag(event)" width="336" height="69">'+field+'</button><br>').appendTo("#pool");
 			}
 		});
@@ -327,7 +332,8 @@ $(document).ready(function(){
     	})
     	$("#test1table").hide();
     	$(".room-section").show();
-    	$("#submitChange").show();  	 
+    	$("#submitChange").show();
+    	
     	displayChair();
     } 
     

@@ -1,21 +1,19 @@
 package com.ibm.java.demo.db;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,48 +22,38 @@ import com.ibm.java.demo.entity.Room;
 import com.ibm.java.demo.exception.ChairException;
 import com.ibm.java.demo.exception.CustomException;
 import com.ibm.java.demo.exception.RoomException;
+import com.ibm.java.demo.properties.SqlProperties;
+
 
 /*
  * Implement functions which create connection and execute queries
  */
 public class DatabaseQuery {
 
-	private InputStream inputStream;
-	private Properties sqlProperties;
+	//private InputStream inputStream;
+	//private Properties sqlProperties;
+	private final static Logger logger = LoggerFactory.getLogger(DatabaseQuery.class);
 	public int dev = 1;
 	private Connection con =null;
 	private ResultSet rs = null;
 	private PreparedStatement preparedStatement = null;
-	private String propertiesFileName = "config.properties";
+	//private String propertiesFileName = "config.properties";
+	//SqlProperties getSqlQueries = new SqlProperties();
+	
 	public DatabaseQuery() {
 
-		sqlProperties = new Properties();
-		inputStream = this.getClass().getClassLoader().getResourceAsStream(propertiesFileName);
-			
-			try {
-				
-			if (inputStream != null) {
-				sqlProperties.load(inputStream);
-			} else {
-				throw new IOException("Input Stream is null"); // comment
-			}		
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		} finally {
-			try {
-				if (inputStream != null)
-					inputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+//			try {
+//				sqlProperties = getSqlQueries.getQueries();
+//			} catch (CustomException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 	}
 
 	/*
 	 * Implement query to create association between chair and room.
 	 */
+	
 	public JSONObject associateChairToRoom(String room, String chair) throws CustomException {
 	
 		try {
@@ -73,7 +61,7 @@ public class DatabaseQuery {
 			 * Get query from properties file and execute the prepared statement
 			 */
 			con = ConnectionManager.getConnection();
-			String associateCheck = sqlProperties.getProperty("associateCheck");
+			String associateCheck = SqlProperties.getKey("associateCheck");
 			preparedStatement = con.prepareStatement(associateCheck);
 			preparedStatement.setString(1, chair);
 			rs = preparedStatement.executeQuery(); // try catch
@@ -87,6 +75,7 @@ public class DatabaseQuery {
 				JSONObject response = new JSONObject();
 				response.put("response", "Association exists");
 				response.put("status", 200);
+				logger.info("Chair is already associated");
 				return response;
 			}
 
@@ -95,7 +84,7 @@ public class DatabaseQuery {
 			 * create an association
 			 */
 			else {
-				String associate = sqlProperties.getProperty("associate");
+				String associate = SqlProperties.getKey("associate");
 				preparedStatement = con.prepareStatement(associate);
 				preparedStatement.setString(1, room);
 				preparedStatement.setString(2, chair);
@@ -108,9 +97,9 @@ public class DatabaseQuery {
 				return response;
 			}
 		} catch (SQLException e) {
-
 			e.printStackTrace();
 			throw new CustomException("SQLException occured while executing query", e);
+			
 		} finally {
 			try {
 				if (rs != null)
@@ -141,7 +130,7 @@ public class DatabaseQuery {
 		
 		try {
 			con = ConnectionManager.getConnection();
-			String checkChair = sqlProperties.getProperty("checkChair");
+			String checkChair = SqlProperties.getKey("checkChair");
 			preparedStatement = con.prepareStatement(checkChair);
 			preparedStatement.setString(1, chair.getChairName());
 			rs = preparedStatement.executeQuery();
@@ -152,7 +141,7 @@ public class DatabaseQuery {
 			 */
 			if (rs.next()) {
 
-				throw new ChairException(chair.getChairName() + " Chair already exists. Please give other name");
+				throw new ChairException(chair.getChairName() + " already exists. Please give other name");
 			}
 
 			/*
@@ -160,7 +149,7 @@ public class DatabaseQuery {
 			 * entry in Database
 			 */
 			else {
-				String createChair = sqlProperties.getProperty("createChair");
+				String createChair = SqlProperties.getKey("createChair");
 				preparedStatement = con.prepareStatement(createChair);
 				preparedStatement.setString(1, chair.getChairName());
 				preparedStatement.executeUpdate();
@@ -201,7 +190,7 @@ public class DatabaseQuery {
 
 		try {
 			con = ConnectionManager.getConnection();
-			String checkRoom = sqlProperties.getProperty("checkRoom");
+			String checkRoom = SqlProperties.getKey("checkRoom");
 			preparedStatement = con.prepareStatement(checkRoom);
 			preparedStatement.setString(1, room.getRoomName());
 			rs = preparedStatement.executeQuery();
@@ -213,7 +202,9 @@ public class DatabaseQuery {
 
 			if (rs.next()) {
 
+				logger.debug("Room with name already exists");
 				throw new RoomException(room.getRoomName() + " already exists. Please give other name");
+				
 			}
 
 			/*
@@ -221,7 +212,7 @@ public class DatabaseQuery {
 			 * entry in Database
 			 */
 			else {
-				String createRoom = sqlProperties.getProperty("createRoom");
+				String createRoom = SqlProperties.getKey("createRoom");
 				preparedStatement = con.prepareStatement(createRoom);
 				preparedStatement.setString(1, room.getRoomName());
 				preparedStatement.executeUpdate();
@@ -261,30 +252,27 @@ public class DatabaseQuery {
 	/*
 	 * Retrieves Names of entities from their tables
 	 */
-	public JSONObject getRooms(String room) throws CustomException {
+	public JSONObject getRooms() throws CustomException {
 	
 		try {
 			/*
 			 * Execute query to retreive all Rooms that exist in database
 			 */
 			con = ConnectionManager.getConnection();
-			String getRooms = sqlProperties.getProperty("getRooms");
+			String getRooms = SqlProperties.getKey("getRooms");
 			preparedStatement = con.prepareStatement(getRooms);
-			preparedStatement.setString(1, room);
 			ResultSet rs = preparedStatement.executeQuery();
 
 			JSONObject jobj = new JSONObject();
 			int i = 0;
 			String s = null;
-			
-			
+						
 			while (rs.next()) {
 				s = rs.getString("RoomId");
-				jobj.put(room + i, s);
+				jobj.put("Room" + i, s);
 				i++;
 			}
 
-			jobj.put("status", 200);
 			return jobj;
 
 		} catch (SQLException e) {
@@ -316,29 +304,28 @@ public class DatabaseQuery {
 		}
 	}
 
-	public JSONObject getChairs(String chair) throws CustomException {
+	public JSONObject getChairs() throws CustomException {
 		
 		try {
 			/*
 			 * Execute query to retreive all Chairs that exist in database
 			 */
 			con = ConnectionManager.getConnection();
-			String getChairs = sqlProperties.getProperty("getChairs");
+			String getChairs = SqlProperties.getKey("getChairs");
 			preparedStatement = con.prepareStatement(getChairs);
-			preparedStatement.setString(1, chair);
 			ResultSet rs = preparedStatement.executeQuery();
 
+			
 			JSONObject jobj = new JSONObject();
 			int i = 0;
 			String s = null;
 
 			while (rs.next()) {
 				s = rs.getString("ChairId");
-				jobj.put(chair + i, s);
+				jobj.put("Chair" + i, s);
 				i++;
 			}
 
-			jobj.put("status", 200);
 			return jobj;
 
 		} catch (SQLException e) {
@@ -381,7 +368,7 @@ public class DatabaseQuery {
 		 */
 		try {
 			con = ConnectionManager.getConnection();
-			String getNames = sqlProperties.getProperty("deleteRC");
+			String getNames = SqlProperties.getKey("deleteRC");
 			preparedStatement = con.prepareStatement(getNames);
 			preparedStatement.setString(1, chair);
 			preparedStatement.executeUpdate();
@@ -430,7 +417,7 @@ public class DatabaseQuery {
 			 * Retrieve data of all room-chair associations from database
 			 */
 			con = ConnectionManager.getConnection();
-			String getNames = sqlProperties.getProperty("report");
+			String getNames = SqlProperties.getKey("report");
 			preparedStatement = con.prepareStatement(getNames);
 			ResultSet rs = preparedStatement.executeQuery();
 
@@ -504,7 +491,7 @@ public class DatabaseQuery {
 			 * Delete the requested chair from Chair table
 			 */
 			con = ConnectionManager.getConnection();
-			String deleteChair = sqlProperties.getProperty("deleteChair");
+			String deleteChair = SqlProperties.getKey("deleteChair");
 			preparedStatement = con.prepareStatement(deleteChair);
 			preparedStatement.setString(1, chair);
 			preparedStatement.executeUpdate();
@@ -553,7 +540,7 @@ public class DatabaseQuery {
 			 * Delete the requested chair from Chair table
 			 */
 			con = ConnectionManager.getConnection();
-			String getNames = sqlProperties.getProperty("deleteRoom");
+			String getNames = SqlProperties.getKey("deleteRoom");
 			preparedStatement = con.prepareStatement(getNames);
 			preparedStatement.setString(1, room);
 			preparedStatement.executeUpdate();
@@ -610,7 +597,7 @@ public class DatabaseQuery {
 				String room = (String) iterator.next();
 				JSONArray jchairs = (JSONArray) jobj.get(room);
 				for (int i = 0; i < jchairs.length(); i++) {
-					String newArrangement = sqlProperties.getProperty("newArrangement");
+					String newArrangement = SqlProperties.getKey("newArrangement");
 					preparedStatement = con.prepareStatement(newArrangement);
 					preparedStatement.setString(1, room);
 					preparedStatement.setString(2, jchairs.getString(i));
@@ -650,57 +637,57 @@ public class DatabaseQuery {
 	}
 
 	// Update and change
-	public JSONObject getNames(String name) throws CustomException {
-	
-		try {
-
-			/*
-			 * Execute query to retreive all Rooms/Chairs that exist in database
-			 */
-			con = ConnectionManager.getConnection();
-			String getNames = MessageFormat.format((String) sqlProperties.get("getNames"), name + "Id", name);
-			preparedStatement = con.prepareStatement(getNames);
-			ResultSet rs = preparedStatement.executeQuery();
-
-			JSONObject jobj = new JSONObject();
-			int i = 0;
-			String s = null;
-
-			while (rs.next()) {
-				s = rs.getString(name + "Id");
-				jobj.put(name + i, s);
-				i++;
-			}
-
-			jobj.put("status", 200);
-			return jobj;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new CustomException("SQLException occured while executing query", e);
-
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new CustomException("Connection not closed properly.");
-			}
-			try {
-				if (preparedStatement != null)
-					preparedStatement.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new CustomException("PreparedStatement not closed properly.");
-			}
-			try {
-				if (con != null)
-					con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new CustomException("ResultSet not closed properly.");
-			}
-		}
-	}
+//	public JSONObject getNames(String name) throws CustomException {
+//	
+//		try {
+//
+//			/*
+//			 * Execute query to retreive all Rooms/Chairs that exist in database
+//			 */
+//			con = ConnectionManager.getConnection();
+//			String getNames = MessageFormat.format((String) SqlProperties.getKey("getNames"), name + "Id", name);
+//			preparedStatement = con.prepareStatement(getNames);
+//			ResultSet rs = preparedStatement.executeQuery();
+//
+//			JSONObject jobj = new JSONObject();
+//			int i = 0;
+//			String s = null;
+//
+//			while (rs.next()) {
+//				s = rs.getString(name + "Id");
+//				jobj.put(name + i, s);
+//				i++;
+//			}
+//
+//			jobj.put("status", 200);
+//			return jobj;
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			throw new CustomException("SQLException occured while executing query", e);
+//
+//		} finally {
+//			try {
+//				if (rs != null)
+//					rs.close();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				throw new CustomException("Connection not closed properly.");
+//			}
+//			try {
+//				if (preparedStatement != null)
+//					preparedStatement.close();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				throw new CustomException("PreparedStatement not closed properly.");
+//			}
+//			try {
+//				if (con != null)
+//					con.close();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				throw new CustomException("ResultSet not closed properly.");
+//			}
+//		}
+//	}
 }
